@@ -1,0 +1,53 @@
+<h2> Add Lookup Data </h2>
+<hr/>
+<div class="col-md-6">
+	<div>
+		<form role="form" id="add-lkup-type" ng-submit="addLookup()">
+		<div class="form-group">
+			<label class="col-md-2">Lookup</label>
+			<select class="col-md-4" id="type" ng-model="lookupNew.lookuptype" placeholder="Select Type">
+				<option ng-repeat="lookuptype in lookuptypes" value="{{lookuptype.lookuptype}}">{{lookuptype.lookuptype}}</option>
+	          </select>
+	          <input class="col-md-4" type="text" ng-model="lookupNew.lookupvalue" placeholder="Lookup Value"/>
+	          <input type="submit" class="btn btn-success btn-sm" value="Add"/>
+		</div>
+		</form>
+
+	</div>
+	<table class="table table-striped">
+		<thead>
+			<th>Lookup type</th>
+			<th>Lookup Value</th>
+			<th>Delete</th>
+		</thead>
+		<tbody>
+			<tr ng-repeat="lookup in lookups | filter:lookupNew.lookuptype">
+				<td>{{lookup.lookuptype}}</td>
+				<td>{{lookup.lookupvalue}}</td>
+				<td><a href="#" target="_self" ng-click="deleteLookup(lookup._id)">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="col-md-1"></div>
+<div class="col-md-5">
+	<form role="form" id="add-lkup-type" ng-submit="addType()">
+		<div class="form-group">
+			<label class="col-md-4">Lookup Type</label>
+			<input class="col-md-5" type="text" ng-model="lookupTypeNew.type"/>
+		</div>
+		<input type="submit" class="btn btn-success btn-sm" value="Add"/>
+	</form>
+	<table class="table table-striped">
+		<thead>
+			<th>Lookup type</th>
+			<th>Delete</th>
+		</thead>
+		<tbody>
+			<tr ng-repeat="lookuptype in lookuptypes">
+				<td>{{lookuptype.lookuptype}}</td>
+				<td><a href="#" target="_self" ng-click="deleteType(lookuptype._id)">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>	

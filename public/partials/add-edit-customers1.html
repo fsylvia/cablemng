@@ -1,0 +1,187 @@
+<form class="form-horizontal">
+  <fieldset>
+    <legend>{{heading}}</legend>
+    <div class="row">
+	   <div class="well col-md-12">
+			<legend class="subheading"> Personal Details</legend>
+			<div class="form-group">
+				<label for="customername" class="col-md-1 control-label"> Name</label>
+				<div class="col-md-2"><input class=" form-control " id="customername" placeholder="Kannagi" type="text" ng-model="customer.customername"></div>
+
+				<label for="fathersname" class="col-md-2  control-label"> Father's Name</label>
+				<div class="col-md-2"><input class=" form-control " id="fathername" placeholder="Murugan" type="text" ng-model="customer.fathername"></div>
+				<label for="dateofbirth" class="col-md-2 control-label"> Date Of Birth</label>
+				<div class="col-md-2"><datepicker date-format="yyyy-MM-dd"><input class="form-control" type="text" id="dateofbirth" value="" placeholder="dd/mm/yyyy" ng-model="customer.dateofbirth"></datepicker></div>
+			</div>
+
+			<div class="form-group ">
+				<label for="idprooftype" class="col-md-1 control-label"> ID Proof</label>
+				<div class="col-md-2"><select class=" form-control " id="idprooftype" ng-model="customer.idprooftype">
+					<option ng-repeat="prooftype in idprooftypes" value="{{prooftype.lookupvalue}}">{{prooftype.lookupvalue}}</option>
+				</select></div>
+
+				<label for="idproofno" class="col-md-2  control-label"> ID Proof No</label>
+				<div class="col-md-2"><input class=" form-control " id="idproofno" placeholder="AFGPC1122N" type="text" ng-model="customer.idproofno"></div>
+
+				<div class="col-md-4 pull-right"><a href="#" target="_self" class="btn btn-success" ng-click="saveCustomer()">Save Customer Details</a></div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="well col-md-12">
+		<legend class="subheading"> Contact Details</legend>
+			<div class="col-md-5">
+				<div>
+					<span ng-repeat="address in addresses">
+						<p>Address : {{address.street1}}, {{address.street2}}, {{address.area}}, {{address.city}}, {{address.pincode}}</p>
+						<p>Contacts : {{address.landlineno}}, {{address.mobileno}}, {{address.email}} <span class="pull-right"><a href="#" target="_self" ng-click="deleteAddress(address._id)">Delete</a></span></p>
+						<hr/>
+					</span>
+				</div>
+			</div>
+			<div class="col-md-7" id="addaddress">
+				<div class="form-group ">
+					<label for="street1" class="col-md-2 control-label">Door No</label>
+					<div class="col-md-3"><input class=" form-control " id="street1" placeholder="No4" type="text" ng-model="newAddress.street1"></div>
+
+					<label for="street2" class="col-md-3  control-label">Street</label>
+					<div class="col-md-3"><input class=" form-control " id="street2" placeholder="Wireless Station Road" type="text" ng-model="newAddress.street2"></div>
+				</div>
+				<div class="form-group ">
+					<label for="area" class="col-md-2 control-label">Area</label>
+					<div class="col-md-3"><select class=" form-control " id="area" ng-model="newAddress.area">
+						<option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
+					</select>
+					</div>
+					
+					<label for="pincode" class="col-md-3  control-label">Pincode</label>
+					<div class="col-md-3"><input class=" form-control " id="pincode" placeholder="689344" type="text" ng-model="newAddress.pincode"></div>
+				</div>
+
+				<div class="form-group ">
+					<label for="landlineno" class="col-md-2 control-label">LandLine No</label>
+					<div class="col-md-3"><input class=" form-control " id="landlineno" placeholder="0431-" type="text" ng-model="newAddress.landlineno">
+					</div>
+					
+					<label for="mobileno" class="col-md-3  control-label">Mobile No</label>
+					<div class="col-md-3"><input class=" form-control " id="mobileno" placeholder="9882323248" type="text" ng-model="newAddress.mobileno"></div>
+				</div>
+
+				<div class="form-group ">
+					<label for="email" class="col-md-2 control-label">Email</label>
+					<div class="col-md-3"><input class="form-control" type="text" id="email" value="" placeholder="vijay.cables@gmail.com" ng-model="newAddress.email"></div>
+					<div class="col-md-3"></div>
+					<div class="col-md-3">
+
+					<a href="#" target="_self" class="btn btn-success" ng-click="saveAddress()">Save Address Details</a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+	   <div class="well col-md-12">
+			<legend class="subheading"> Connection Details</legend>
+			<table class="table">
+				<thead>
+					<th>Has amp?</th>
+					<th>Advance Amount</th>
+					<th>Subscription Amount</th>
+					<th>Payment due on</th>
+					<th>Start Date</th>
+					<th>Address</th>
+					<th>Action</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input id="hasamp" type="checkbox" ng-model="newConnection.hasamp"/></td>
+						<td><input class="form-control" id="advanceamt" placeholder="500" type="Number" ng-model="newConnection.advanceamt"></td>
+						<td><input class="form-control" id="subscriptionamt" placeholder="120" type="Number" ng-model="newConnection.subscriptionamt"></td>
+						<td><datepicker date-format="dd"><input class="form-control" id="paymentdueon" placeholder="5" type="Number" ng-model="newConnection.paymentdueon"></datepicker></td>
+						<td><datepicker date-format="yyyy-MM-dd"><input class="form-control" id="connectionstartdate" placeholder="YYYY-MM-dd" type="Date" ng-model="newConnection.connectionstartdate"></datepicker></td>
+						<td><select class="form-control" id="connaddress" ng-model="newConnection.addressid">
+							<option ng-repeat="address in addresses" value="{{address._id}}"><p>{{address.street1}}, {{address.street2}}, {{address.area}}, {{address.city}}, {{address.pincode}}</p></option>
+						</select></td>
+						<!--
+						<td><select id="paymentstatus" ng-model="newConnection.paymentstatus">
+							<option ng-repeat="paidtype in paidtypes" value="{{paidtype.lookupvalue}}">{{paidtype.lookupvalue}}</option>
+						</select></td>
+						<td></td>
+						<td><input id="exemptiontill" placeholder="YYYY-MM-dd" type="Date" ng-model="newConnection.exemptiontill"></td>
+						<td></td>-->
+						<td><a href="#" target="_self" class="btn btn-success" ng-click="saveConnectionDetails()">Add</a></td>
+					</tr>
+					</tbody>
+					</table>
+					<table class="table">
+					<thead>
+						<th>Active</th>
+						<th>Has amp?</th>
+						<th>Exempted?</th>
+						<th>Advance Amount</th>
+						<th>Subscription Amount</th>
+						<th>Payment due on</th>
+						<th>Start Date</th>
+						<th>Address</th>
+						<th>Action</th>
+					</thead>
+					<tbody>
+					<tr ng-repeat="connection in connections">
+						<td class="col-md-1"><img ng-if="connection.active" ng-src="img/truetick.png"/><img ng-if="!connection.active" ng-src="img/falsecross.png"/></td>
+						<td class="col-md-1"><img ng-if="connection.hasamp" ng-src="img/truetick.png"/><img ng-if="!connection.hasamp" ng-src="img/falsecross.png"/></td>
+						<td class="col-md-1"><img ng-if="connection.exemtpiontill" ng-src="img/truetick.png"/><img ng-if="!connection.exemtpiontill" ng-src="img/falsecross.png"/></td>
+						<td class="col-md-1">{{connection.advanceamt}}</td>
+						<td class="col-md-1">{{connection.subscriptionamt}}</td>
+						<td class="col-md-1">{{connection.paymentdueon}}</td>
+						<td class="col-md-1">{{connection.connectionstartdate  | date: 'MMM dd yyyy'}}</td>
+						<td class="col-md-3">{{connection.address[0].street1}}, {{connection.address[0].street2}}, {{connection.address[0].area}}, {{connection.address[0].city}}, {{connection.address[0].pincode}}</td>
+						<td class="col-md-1"><a href="#" target="_self" ng-click="openModal(connection)">Edit</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div id="showModal" ng-show="true">
+			    <div class="modal-header">
+			        <h4>Edit Connection</h4>
+			    </div>
+			    <div class="modal-body">
+			    	<div class="form-group">
+			    		
+			    		<div class="col-md-1"><label for="conactive" >Active </label> <input id="conactive" type="checkbox" ng-model="modconnection.active"/></div>
+			    		<div class="col-md-1"><label for="exempt" >Exempt </label> <input id="exempt" type="checkbox" ng-model="modconnection.exempt" /></div>
+			    		<div class="col-md-1"><label for="hasamp" >Has Amp? </label><input id="hasamp" type="checkbox" ng-model="modconnection.hasamp"/></div>
+
+						<label class="col-md-2" for="advanceamt" >Advance Amount </label>
+			    		<div class="col-md-1"><input class="form-control" id="advanceamt" placeholder="500" type="Number" ng-model="modconnection.advanceamt"></div>
+			    		<label class="col-md-2" for="subscriptionamt" >Subscription Amount </label>
+						<div class="col-md-1"><input class="form-control" id="subscriptionamt" placeholder="120" type="Number" ng-model="modconnection.subscriptionamt"></div>
+						<label class="col-md-1" for="paymentdueon" >Due On </label>
+			    		<div class="col-md-1"><input class="form-control" id="paymentdueon" placeholder="500" type="Number" ng-model="modconnection.paymentdueon"></div>
+			    		
+			    	</div>
+			        <div class="form-group" ng-show="!modconnection.active">
+			        	
+			        	
+						<label for="deacitvationreason" class="col-md-3" >Reason for De-Activation: </label>
+			        	<select class="col-md-2"  id="deacitvationreason" ng-model="modconnection.deacitvationreason">
+							<option ng-repeat="deactreason in deactivationreasons"value="{{deactreason.lookupvalue}}">{{deactreason.lookupvalue}}</option>
+						</select>
+					</div>
+					<div class="form-group" ng-show="modconnection.exempt">
+						<label class="col-md-2" for="exemptiontill" >Exempt Until: </label>
+			        	<div class="col-md-2" ><datepicker pattern="yyyy-MM-dd"><input class="form-control" id="exemptiontill" placeholder="YYYY-MM-dd" type="Date" ng-model="modconnection.exemptiontill"></datepicker></div>
+						<label for="exemptionreason" class="col-md-3" >Reason for Exemption: </label>
+			        	<div class=" col-md-2"><input class="form-control" type="text" id="exemptionreason" ng-model="modconnection.exemptionreason"/></div>
+			        </div>
+			        <div class="form-group pull-right">
+			        	<button class="btn btn-success" ng-click="updateConnection()">Okay</button>
+			      		<button class="btn" ng-click="closeModal()">Cancel</button>
+			        </div>
+			    </div>
+			    
+			 </div>
+		</div>
+	</div>
+  </fieldset>
+</form>
+

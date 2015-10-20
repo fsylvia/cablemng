@@ -1,0 +1,143 @@
+<div id="conmodal" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-hidden="true" ng-click="toggleModal('')">&times;</button>
+        <h4 class="modal-title">{{ modalHeading }}</h4>
+      </div>
+      <div class="modal-body" >
+        <div class="well" ng-if="modalHeading !='Make Payment'">
+        <form class="form-horizontal" name="connectionForm" novalidate>
+          <div id="help" class="row" ng-show="connectionForm.$invalid">
+            <div class="help-block" ng-messages="connectionForm.deacitvationreason.$error" ng-if="connectionForm.deacitvationreason.$touched">
+                  <p class="text-danger" ng-message="required">Reason for DeActivation is required when inactivating a connection</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.paymentdueon.$error" ng-if="connectionForm.paymentdueon.$touched">
+                  <p class="text-danger" ng-message="required">Payment Due on  is required.</p>
+                  <p class="text-danger" ng-message="number">Payment Due should be a number</p>
+                  <p class="text-danger" ng-message="pattern">Payment Due on  should be a number between 1 and 20</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.advanceamt.$error" ng-if="connectionForm.advanceamt.$touched">
+                  <p class="text-danger" ng-message="pattern">Advance amount should be multiple of 10.</p>
+                  <p class="text-danger" ng-message="number">Advance amount should be a number</p>
+                  <p class="text-danger" ng-message="required">Advance amount is required.</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.subscriptionamt.$error" ng-if="connectionForm.subscriptionamt.$touched">
+                <p class="text-danger" ng-message="pattern">Subscription amount should be multiple of 10.</p>
+                <p class="text-danger" ng-message="number">Subscription amount should be a number</p>
+                <p class="text-danger" ng-message="required">Subscription amount is required.</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.street1.$error" ng-if="connectionForm.street2.$touched">
+                  <p class="text-danger" ng-message="required">Door No is required.</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.street2.$error" ng-if="connectionForm.street2.$touched">
+                <p class="text-danger" ng-message="required">Street is required.</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.area.$error" ng-if="connectionForm.area.$touched">
+                <p class="text-danger" ng-message="required">Area is required.</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.pincode.$error" ng-if="connectionForm.pincode.$touched">
+                  <p class="text-danger" ng-message="pattern">Pincode should contain 6 digits</p>
+                  <p class="text-danger" ng-message="required">Pincode is required</p>
+              </div>
+              
+          </div>
+          <div class="form-group">
+            <label for="active" class="col-md-1 control-label">Active</label>
+            <div class="col-md-1"><input id="active" type="checkbox" ng-model="connection.active"/></div>
+            <div ng-class="{ 'has-error': connectionForm.deacitvationreason.$touched && connectionForm.deacitvationreason.$invalid }" ng-show="!connection.active">
+              <label class="col-md-3" for="deacitvationreason">Reason for DeActivation: </label>
+              <div class="col-md-3">
+                <select name="deacitvationreason" class="form-control" ng-model="connection.deacitvationreason" >
+                  <option ng-repeat="deactreason in deactivationreasons"value="{{deactreason.lookupvalue}}">{{deactreason.lookupvalue}}</option>
+                </select>
+              </div>
+            </div>
+            <label for="hasamp" class="col-md-2 control-label">Has Amp? : </label>
+            <div class="col-md-1"><input id="hasamp" type="checkbox" ng-model="connection.hasamp"/></div>
+          </div>
+          <div class="form-group">
+            <div ng-class="{ 'has-error': connectionForm.paymentdueon.$touched && connectionForm.paymentdueon.$invalid }">
+              <label for="paymentdueon" class="col-md-2 control-label">Payment Due On : </label>
+              <div class="col-md-2"><input class="form-control" name="paymentdueon" type="Number" ng-model="connection.paymentdueon" ng-pattern="pymtduePattern" required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.advanceamt.$touched && connectionForm.advanceamt.$invalid }">
+              <label for="advanceamt" class="col-md-2 control-label">Advance : </label>
+              <div class="col-md-2"><input  class="form-control" name="advanceamt" type="Number" ng-model="connection.advanceamt" ng-pattern="advamtPattern"  required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.subscriptionamt.$touched && connectionForm.subscriptionamt.$invalid }">
+              <label for="subscriptionamt" class="col-md-2 control-label">Subscription : </label>
+              <div class="col-md-2"><input  class="form-control" name="subscriptionamt" type="Number" ng-model="connection.subscriptionamt" ng-pattern="subsamtPattern" required/></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="diffaddr">Use a different address</label>
+            <div class="col-md-2"><input type="checkbox" id="diffaddr" ng-click="resetAddress()"/></div>
+          </div>
+          
+          <div class="form-group">
+            <div ng-class="{ 'has-error': connectionForm.street1.$touched && connectionForm.street1.$invalid }">
+              <label for="street1" class="col-md-1 control-label">Door No : </label>
+              <div class="col-md-2"><input  class="form-control" name="street1" type="text" ng-model="connection.address.street1" required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.street2.$touched && connectionForm.street2.$invalid }">
+              <label for="street2" class="col-md-1 control-label">Street : </label>
+              <div class="col-md-2"><input  class="form-control" name="street2" type="text" ng-model="connection.address.street2" required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.area.$touched && connectionForm.area.$invalid }">
+              <label for="area" class="col-md-1 control-label">Area : </label>
+              <div class="col-md-2"><select class="form-control" name="area" ng-model="connection.address.area" required>
+                <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
+              </select>
+              </div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.pincode.$touched && connectionForm.pincode.$invalid }">
+              <label for="pincode" class="col-md-1  control-label">Pincode: </label>
+              <div class="col-md-2"><input class="form-control" name="pincode" placeholder="624015" type="text" ng-model="connection.address.pincode" ng-pattern="pincodePattern" required></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success pull-right" ng-click="saveConnectionDetails()" data-ng-disabled="connectionForm.$invalid">Save Connection</button>
+          </div>
+        </form>
+      </div>
+      <div class="row" ng-if="modalHeading =='Make Payment'">
+        <table class="table table-striped table-hover ">
+          <thead>
+            <tr>
+              <th>Payment Type</th>
+              <th>Paid Amount</th>
+              <th>Paid for month</th>
+              <th>Agent Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><select class="form-control"  id="paymenttypes" ng-model="payment.type"><option ng-repeat="type in paymenttypes" value="{{type.lookupvalue}}">{{type.lookupvalue}}</option></select></td>
+              <td><input type="number" ng-model="payment.paidamt" value="" placeholder="100"/></td>
+              <td>
+                <p class="input-group">
+                  <input type="text" class="form-control" datepicker-popup="{{monthFormat}}" ng-model="payment.paidformonth" is-open="pfmStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" datepicker-mode="'month'"min-mode=" 'month'" max-mode="'month'" show-weeks='false'/>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openCal($event, 'pfmstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </p>
+              </td>
+              <td><select class="form-control"  id="paidto" ng-model="payment.paidto"><option ng-repeat="agent in agents" value="{{agent.agentname}}">{{agent.agentname}}</option></select></td>
+              <td><button name="save" class="btn btn-success btn-sm" ng-click="savePayment()">Save Payment</button></td>
+            </tr>
+            <tr ng-repeat="payment in payments">
+              <td>{{payment.paymenttype}}</td>
+              <td>{{payment.paidamt}}</td>
+              <td>{{payment.paidformonth | date: 'MMM yyyy'}}</td>
+              <td>{{payment.paidto}}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

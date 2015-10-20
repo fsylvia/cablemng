@@ -1,0 +1,92 @@
+<div class="well">
+<form class="form-horizontal">
+  <fieldset>
+    <legend>{{header}}</legend>
+        <div class="form-group">
+        <label for="agentname" class="col-md-1 control-label"> Name</label>
+        <div class="col-md-2"><input class=" form-control " id="agentname" placeholder="Kannagi" type="text" ng-model="agent.agentname"></div>
+
+        <label for="fathersname" class="col-md-2  control-label"> Father's Name</label>
+        <div class="col-md-2"><input class=" form-control " id="fathersname" placeholder="Murugan" type="text" ng-model="agent.fathersname"></div>
+        <label for="dateofbirth" class="col-md-2 control-label"> Date Of Birth</label>
+        <div class="col-md-2">
+          <p class="input-group">
+            <input id="dateofbirth" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.dateofbirth" is-open="dobStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openCal($event, 'dobstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-1 control-label" for="active" >Active </label>
+        <div class="col-md-1"> <input id="active" type="checkbox" ng-model="agent.active"/></div>
+        <div class="col-md-10" ng-show="!agent.active">
+          <label for="reasonfortermination" class="col-md-3 control-label" >Reason for Termination: </label>
+              <select class="col-md-2"  id="terminationreason" ng-model="agent.reasonfortermination">
+            <option ng-repeat="terminationReason in terminationReasons"value="{{terminationReason.lookupvalue}}">{{terminationReason.lookupvalue}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group ">
+        <label for="idprooftype" class="col-md-1 control-label"> ID Proof</label>
+        <div class="col-md-2"><select class=" form-control " id="idprooftype" ng-model="agent.idprooftype">
+          <option ng-repeat="prooftype in idprooftypes" value="{{prooftype.lookupvalue}}">{{prooftype.lookupvalue}}</option>
+        </select></div>
+
+        <label for="idproofno" class="col-md-2  control-label"> ID Proof No</label>
+        <div class="col-md-2"><input class=" form-control " id="idproofno" placeholder="AFGPC1122N" type="text" ng-model="agent.idproofno"></div>
+        
+      </div>
+      <div class="form-group ">
+          <label for="street1" class="col-md-1 control-label">Door No</label>
+          <div class="col-md-2"><input class=" form-control " id="street1" placeholder="No4" type="text" ng-model="agent.address.street1"></div>
+
+          <label for="street2" class="col-md-1  control-label">Street</label>
+          <div class="col-md-2"><input class=" form-control " id="street2" placeholder="Wireless Station Road" type="text" ng-model="agent.address.street2"></div>
+
+          <label for="area" class="col-md-1 control-label">Area</label>
+          <div class="col-md-2"><select class="form-control" id="area" ng-model="agent.address.area">
+            <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
+          </select>
+          </div>
+
+          <label for="pincode" class="col-md-1  control-label">Pincode</label>
+          <div class="col-md-1"><input class=" form-control " id="pincode" placeholder="689344" type="text" ng-model="agent.address.pincode"></div>
+          
+        </div>
+        
+        <div class="form-group ">
+          <label for="landlineno" class="col-md-1 control-label">LandLine No</label>
+          <div class="col-md-2"><input class=" form-control " id="landlineno" placeholder="0431-" type="text" ng-model="agent.contacts.landlineno">
+          </div>
+          
+          <label for="mobileno" class="col-md-1  control-label">Mobile No</label>
+          <div class="col-md-2"><input class=" form-control " id="mobileno" placeholder="9882323248" type="text" ng-model="agent.contacts.mobileno"></div>
+
+          <label for="email" class="col-md-1 control-label">Email</label>
+          <div class="col-md-2"><input class="form-control" type="text" id="email" placeholder="vijay.cables@gmail.com" ng-model="agent.contacts.email"></div>
+        </div>
+        <div class="form-group">
+          <label for="areallocated" class="col-md-1 control-label">Area Allocated</label>
+          <div class="col-md-2"><select class="form-control" id="areallocated" ng-model="agent.areallocated">
+            <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
+          </select>
+          </div>
+          <label for="startdate" class="col-md-1 control-label">Start Date</label>
+          <div class="col-md-2">
+            <p class="input-group">
+              <input id="startdate" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.startdate" is-open="startStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openCal($event, 'startstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+          </div>
+          <label for="salary" class="col-md-1  control-label">Salary</label>
+          <div class="col-md-2"><input class=" form-control " id="salary" placeholder="3000" type="text" ng-model="agent.salary"></div>
+          <div class="col-md-2 pull-right"><button class="btn btn-success" ng-click="saveAgent()">Save Agent Details</button></div>
+        </div>
+  </fieldset>
+</form>
+</div>

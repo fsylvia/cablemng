@@ -1,0 +1,74 @@
+/* app css stylesheet */
+
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+[class*="col-"] {
+  padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+#addaddress {
+   
+   border-left: 1px solid #D8D8D8;
+   padding: 20px;
+  
+}
+
+.subheading {
+  font-size: 15px;
+}
+
+.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+    border: none;
+    padding: 1px;
+}
+
+#conmodal .modal-dialog  {
+  width:80%;
+ 
+}
+
+#conmodal .modal-body{
+  max-height: calc(100% - 50px);
+  overflow-y: auto;
+}
+
+#help {
+  width: 90%;
+  margin: 0px auto;
+  padding-left: 5%;
+  color: 'red';
+
+}

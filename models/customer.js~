@@ -1,0 +1,17 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var Customer = new Schema({
+	customername : String,
+	fathersname: String,
+	idprooftype: String,
+	idproofno: {type: 'string', unique: true },
+	dateofbirth: Date,
+	uniqcustid : { type: 'string', unique: true },
+	custstartdate : Date, 
+	active: Boolean,
+	paymentstatus : String,
+	createddate: Date,
+	updateddate : Date
+});
+var Customer = mongoose.model('Customer', Customer);
+module.exports = Customer;

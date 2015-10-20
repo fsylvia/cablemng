@@ -1,0 +1,164 @@
+<form name="customerForm" class="form-horizontal" novalidate>
+  <fieldset>
+    <legend>{{heading}}</legend>
+    <div class="row">
+	   <div class="well col-md-12">
+			<legend class="subheading"> Personal Details</legend>
+			<div id="help" class="row" ng-show="customerForm.$invalid">
+				<div class="help-block" ng-messages="customerForm.customername.$error" ng-if="customerForm.customername.$touched">
+			        <p class="text-danger" ng-message="required">Customer Name is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.fathersname.$error" ng-if="customerForm.fathersname.$touched">
+			        <p class="text-danger" ng-message="required">Fathers Name is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.dateofbirth.$error" ng-if="customerForm.dateofbirth.$touched">
+			        <p class="text-danger" ng-message="required">Date of Birth is required.</p>
+			    </div>
+			   	<div class="help-block" ng-messages="customerForm.idprooftype.$error" ng-if="customerForm.idprooftype.$touched">
+			    	<p class="text-danger" ng-message="required">ID Proof type is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.idproofno.$error" ng-if="customerForm.idprooftype.$touched">
+			    	<p class="text-danger" ng-message="required">ID Proof No is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.street1.$error" ng-if="customerForm.street2.$touched">
+			        <p class="text-danger" ng-message="required">Door No is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.street2.$error" ng-if="customerForm.street2.$touched">
+			    	<p class="text-danger" ng-message="required">Street is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.area.$error" ng-if="customerForm.area.$touched">
+			    	<p class="text-danger" ng-message="required">Area is required.</p>
+			    </div>
+			    <div class="help-block" ng-messages="customerForm.pincode.$error" ng-if="customerForm.pincode.$touched">
+			        <p class="text-danger" ng-message="pattern">Pincode should contain 6 digits</p>
+			        <p class="text-danger" ng-message="required">Pincode is required</p>
+			    </div>
+			     <div class="help-block" ng-messages="customerForm.landlineno.$error" ng-if="customerForm.landlineno.$touched">
+			        <p class="text-danger" ng-message="pattern">Land Line no should have 11 digits with std code and number</p>
+			        <p class="text-danger" ng-message="required">Land Line no is required</p>
+			    </div>
+			     <div class="help-block" ng-messages="customerForm.mobileno.$error" ng-if="customerForm.mobileno.$touched">
+			        <p class="text-danger" ng-message="pattern">Mobile no should have 10 digits</p>
+			        <p class="text-danger" ng-message="required">Mobile no is required</p>
+			    </div>
+			     <div class="help-block" ng-messages="customerForm.email.$error" ng-if="customerForm.email.$touched">
+			        <p class="text-danger" ng-message="email">Email is not in correct format</p>
+			        
+			    </div>
+			</div>
+			<div class="form-group">
+				<div ng-class="{ 'has-error': customerForm.customername.$touched && customerForm.customername.$invalid }">
+					<label for="customername" class="col-md-1 control-label"> Name</label>
+					<div class="col-md-2"><input class="form-control" name="customername" placeholder="Kannagi" type="text" ng-model="customer.customername" required></div>
+				</div>
+
+				<div ng-class="{ 'has-error': customerForm.fathersname.$touched && customerForm.fathersname.$invalid }">
+					<label for="fathersname" class="col-md-2  control-label"> Father's Name</label>
+					<div class="col-md-2"><input class="form-control" name="fathersname" placeholder="Murugan" type="text" ng-model="customer.fathersname" required></div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.dateofbirth.$touched && customerForm.dateofbirth.$invalid }">
+					<label for="dateofbirth" class="col-md-2 control-label"> Date Of Birth</label>
+					<div class="col-md-2">
+						<p class="input-group">
+			              <input name="dateofbirth" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="customer.dateofbirth" is-open="dobStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" required/>
+			              <span class="input-group-btn">
+			                <button type="button" class="btn btn-default" ng-click="openCal($event, 'dobstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
+			              </span>
+			            </p>
+					</div>
+				</div>
+				
+			</div>
+			
+
+			<div class="form-group ">
+				<div ng-class="{ 'has-error': customerForm.idprooftype.$touched && customerForm.idprooftype.$invalid }">
+					<label for="idprooftype" class="col-md-1 control-label"> ID Proof</label>
+					<div class="col-md-2"><select class="form-control" name="idprooftype" ng-model="customer.idprooftype" required>
+						<option ng-repeat="prooftype in idprooftypes" value="{{prooftype.lookupvalue}}">{{prooftype.lookupvalue}}</option>
+					</select></div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.idproofno.$touched && customerForm.idproofno.$invalid }">
+					<label for="idproofno" class="col-md-2  control-label"> ID Proof No</label>
+					<div class="col-md-2"><input class="form-control" name="idproofno" placeholder="AFGPC1122N" type="text" ng-model="customer.idproofno" required></div>	
+				</div>
+				
+			</div>
+			<div class="form-group ">
+				<div ng-class="{ 'has-error': customerForm.street1.$touched && customerForm.street1.$invalid }">
+					<label for="street1" class="col-md-1 control-label">Door No</label>
+					<div class="col-md-2"><input class="form-control" name="street1" placeholder="No4" type="text" ng-model="customer.address.street1" required></div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.street2.$touched && customerForm.street2.$invalid }">
+					<label for="street2" class="col-md-1  control-label">Street</label>
+					<div class="col-md-2"><input class="form-control" name="street2" placeholder="Wireless Station Road" type="text" ng-model="customer.address.street2" required></div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.area.$touched && customerForm.area.$invalid }">
+					<label for="area" class="col-md-1 control-label">Area</label>
+					<div class="col-md-2"><select class="form-control" name="area" ng-model="customer.address.area" required>
+						<option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
+					</select>
+					</div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.pincode.$touched && customerForm.pincode.$invalid }">
+					<label for="pincode" class="col-md-1  control-label">Pincode</label>
+					<div class="col-md-1"><input class="form-control" name="pincode" placeholder="620015" type="text" ng-model="customer.address.pincode" requird ng-pattern='pincodePattern' required></div>
+				</div>
+			</div>
+				
+			<div class="form-group">
+				<div ng-class="{ 'has-error': customerForm.landlineno.$touched && customerForm.landlineno.$invalid }">
+					<label for="landlineno" class="col-md-1 control-label">LandLine No</label>
+					<div class="col-md-2"><input class="form-control" name="landlineno" placeholder="04312605499" type="text" ng-model="customer.contacts.landlineno" ng-pattern="lndnoPattern" required>
+					</div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.mobileno.$touched && customerForm.mobileno.$invalid }">
+					<label for="mobileno" class="col-md-1  control-label">Mobile No</label>
+					<div class="col-md-2"><input class="form-control" name="mobileno" placeholder="9882323248" type="text" ng-model="customer.contacts.mobileno" required ng-pattern="mobnoPattern"></div>
+				</div>
+				<div ng-class="{ 'has-error': customerForm.email.$touched && customerForm.email.$invalid }">
+					<label for="email" class="col-md-1 control-label">Email</label>
+					<div class="col-md-2"><input class="form-control" type="email" name="email" placeholder="vijay.cables@gmail.com" ng-model="customer.contacts.email"></div>
+				</div>	
+				<div class="col-md-2 pull-right"><button class="btn btn-success" data-ng-disabled="customerForm.$invalid" ng-click="saveCustomer()">Save Customer Details</button></div>
+				
+			</div>
+		</div>
+	</div>
+
+  </fieldset>
+</form>
+<div class="row" ng-show="displayConnections" >
+   <div class="well col-md-12">
+		<legend class="subheading"> Connection Details </legend>
+		
+		<button ng-click="toggleModal('Add Connection')" class="btn btn-success">Add Connection</button>
+		<table class="table">
+			<thead>
+				<th>Active</th>
+				<th>Has amp?</th>
+				<th>Advance Amount</th>
+				<th>Subscription Amount</th>
+				<th>Payment due on</th>
+				<th>Start Date</th>
+				<th>Address</th>
+				<th>Action</th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="connection in connections">
+					<td class="col-md-1"><img ng-if="connection.active" ng-src="img/truetick.png"/><img ng-if="!connection.active" ng-src="img/falsecross.png"/></td>
+					<td class="col-md-1"><img ng-if="connection.hasamp" ng-src="img/truetick.png"/><img ng-if="!connection.hasamp" ng-src="img/falsecross.png"/></td>
+					<td class="col-md-1">{{connection.advanceamt}}</td>
+					<td class="col-md-1">{{connection.subscriptionamt}}</td>
+					<td class="col-md-1">{{connection.paymentdueon}}</td>
+					<td class="col-md-1">{{connection.connectionstartdate  | date: 'MMM dd yyyy'}}</td>
+					<td class="col-md-3">{{connection.address.street1}}, {{connection.address.street2}}, {{connection.address.area}}, {{connection.address.city}}, {{connection.address.pincode}}</td>
+					<td class="col-md-1"><button ng-click="toggleModal('Edit Connection', connection)" class="btn btn-success">Edit</button></td>
+					<td class="col-md-1"><button ng-click="toggleModal('Make Payment', connection)" class="btn btn-success">Make Payment</button></td>
+				</tr>
+			</tbody>
+		</table>
+		<modal visible="showModal"></modal>
+	</div>
+</div>
+
