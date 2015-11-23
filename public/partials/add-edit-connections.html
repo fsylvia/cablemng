@@ -12,10 +12,13 @@
             <div class="help-block" ng-messages="connectionForm.deacitvationreason.$error" ng-if="connectionForm.deacitvationreason.$touched">
                   <p class="text-danger" ng-message="required">Reason for DeActivation is required when inactivating a connection</p>
               </div>
-              <div class="help-block" ng-messages="connectionForm.paymentdueon.$error" ng-if="connectionForm.paymentdueon.$touched">
+              <div class="help-block" ng-messages="connectionForm.conpaymentdate.$error" ng-if="connectionForm.conpaymentdate.$touched">
                   <p class="text-danger" ng-message="required">Payment Due on  is required.</p>
                   <p class="text-danger" ng-message="number">Payment Due should be a number</p>
                   <p class="text-danger" ng-message="pattern">Payment Due on  should be a number between 1 and 20</p>
+              </div>
+              <div class="help-block" ng-messages="connectionForm.paymentmethod.$error" ng-if="connectionForm.paymentmethod.$touched">
+                  <p class="text-danger" ng-message="required">Payment menthod is required.</p>
               </div>
               <div class="help-block" ng-messages="connectionForm.advanceamt.$error" ng-if="connectionForm.advanceamt.$touched">
                   <p class="text-danger" ng-message="pattern">Advance amount should be multiple of 10.</p>
@@ -36,11 +39,6 @@
               <div class="help-block" ng-messages="connectionForm.area.$error" ng-if="connectionForm.area.$touched">
                 <p class="text-danger" ng-message="required">Area is required.</p>
               </div>
-              <div class="help-block" ng-messages="connectionForm.pincode.$error" ng-if="connectionForm.pincode.$touched">
-                  <p class="text-danger" ng-message="pattern">Pincode should contain 6 digits</p>
-                  <p class="text-danger" ng-message="required">Pincode is required</p>
-              </div>
-              
           </div>
           <div class="form-group">
             <label for="active" class="col-md-1 control-label">Active</label>
@@ -57,17 +55,24 @@
             <div class="col-md-1"><input id="hasamp" type="checkbox" ng-model="connection.hasamp"/></div>
           </div>
           <div class="form-group">
-            <div ng-class="{ 'has-error': connectionForm.paymentdueon.$touched && connectionForm.paymentdueon.$invalid }">
-              <label for="paymentdueon" class="col-md-2 control-label">Payment Due On : </label>
-              <div class="col-md-2"><input class="form-control" name="paymentdueon" type="Number" ng-model="connection.paymentdueon" ng-pattern="pymtduePattern" required/></div>
-            </div>
+            
             <div ng-class="{ 'has-error': connectionForm.advanceamt.$touched && connectionForm.advanceamt.$invalid }">
-              <label for="advanceamt" class="col-md-2 control-label">Advance : </label>
-              <div class="col-md-2"><input  class="form-control" name="advanceamt" type="Number" ng-model="connection.advanceamt" ng-pattern="advamtPattern"  required/></div>
+              <label for="advanceamt" class="col-md-1 control-label">Advance : </label>
+              <div class="col-md-1"><input  class="form-control" name="advanceamt" type="Number" ng-model="connection.advanceamt" ng-pattern="advamtPattern"  required/></div>
             </div>
             <div ng-class="{ 'has-error': connectionForm.subscriptionamt.$touched && connectionForm.subscriptionamt.$invalid }">
               <label for="subscriptionamt" class="col-md-2 control-label">Subscription : </label>
-              <div class="col-md-2"><input  class="form-control" name="subscriptionamt" type="Number" ng-model="connection.subscriptionamt" ng-pattern="subsamtPattern" required/></div>
+              <div class="col-md-1"><input  class="form-control" name="subscriptionamt" type="Number" ng-model="connection.subscriptionamt" ng-pattern="subsamtPattern" required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.conpaymentdate.$touched && connectionForm.conpaymentdate.$invalid }">
+              <label for="conpaymentdate" class="col-md-2 control-label">Covenient Payment Date: </label>
+              <div class="col-md-1"><input class="form-control" name="conpaymentdate" type="Number" ng-model="connection.conpaymentdate" ng-pattern="pymtduePattern" required/></div>
+            </div>
+            <div ng-class="{ 'has-error': connectionForm.paymentmethod.$touched && connectionForm.paymentmethod.$invalid }">
+              <label for="paymentmethod" class="col-md-2 control-label">Covenient Payment Method : </label>
+              <div class="col-md-2"><select class="form-control" name="paymentmethod" ng-model="connection.paymentmethod" required>
+                <option ng-repeat="paymentmethod in paymentmethods" value="{{paymentmethod.lookupvalue}}">{{paymentmethod.lookupvalue}}</option>
+              </select></div>
             </div>
           </div>
           <div class="form-group">
@@ -90,10 +95,6 @@
                 <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
               </select>
               </div>
-            </div>
-            <div ng-class="{ 'has-error': connectionForm.pincode.$touched && connectionForm.pincode.$invalid }">
-              <label for="pincode" class="col-md-1  control-label">Pincode: </label>
-              <div class="col-md-2"><input class="form-control" name="pincode" placeholder="624015" type="text" ng-model="connection.address.pincode" ng-pattern="pincodePattern" required></div>
             </div>
           </div>
           <div class="form-group">

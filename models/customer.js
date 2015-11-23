@@ -16,7 +16,8 @@ var CConnection = new Schema({
 	advanceamt : Number,
 	hasamp: Boolean,
 	subscriptionamt : Number,
-	paymentdueon: Number,
+	paymentmethod : String,
+	conpaymentdate: Number,
 	paymentstatus: {type: 'string', default: 'No Dues' },
 	amountdue: Number,
 	connectionstartdate: Date,
@@ -30,8 +31,7 @@ var CConnection = new Schema({
 		street1 : String,
 		street2: String,
 		area: String,
-		city: {type: 'string', default: 'Trichy' },
-		pincode: Number
+		city: {type: 'string', default: 'Trichy' }
 	},
 	payments : [{ type: Schema.Types.ObjectId, ref: 'Payment' }],
 	createddate: Date,
@@ -53,13 +53,11 @@ var Customer = new Schema({
 		street1 : String,
 		street2: String,
 		area: String,
-		city: {type: 'string', default: 'Trichy' },
-		pincode: Number
+		city: {type: 'string', default: 'Trichy' }
 	},
 	contacts : {
 		landlineno : String,
-		mobileno : String,
-		email: String
+		mobileno : String
 	},
 	connections : [CConnection],
 	createddate: Date,

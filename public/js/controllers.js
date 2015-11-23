@@ -25,15 +25,20 @@ angular.module('myApp.controllers', [])
       }, function(err){
         console.log("Error in getting id proof types");
       });
+      lookupFactory.getLookup('PAYMENT_METHOD').then(function(res){
+        $scope.paymentmethods = res.data;
+      }, function(err){
+        console.log('Error in getting payment methods');
+      });
+
       $scope.months = [{'monthName': 'Jan'}, {'monthName': 'Feb'}, {'monthName': 'Mar'}, {'monthName': 'Apr'}, 
       {'monthName': 'May'}, {'monthName': 'Jun'}, {'monthName': 'Jul'}, {'monthName': 'Aug'},
       {'monthName': 'Sep'}, {'monthName': 'Oct'}, {'monthName': 'Nov'}, {'monthName': 'Dec'}];
       $scope.dateFormat="yyyy-MM-dd";
       $scope.datePattern = "";
-      $scope.pincodePattern = /^\d{6}$/;
       $scope.mobnoPattern = /^\d{10}$/;
       $scope.lndnoPattern = /^\d{11}$/;
-      $scope.pymtduePattern = /^(([0]?[1-9])|([1]?[1-9])|(2[0]))$/;
+      $scope.pymtduePattern = /^(([0]?[1-9])|([1]?[0-9])|(2[0]))$/;
       $scope.advamtPattern = /^([1-9][0-9][0])$/;
       $scope.subsamtPattern = /^([1-9][0-9][0]|[8-9][0])$/;
       
@@ -118,7 +123,7 @@ angular.module('myApp.controllers', [])
       {field: 'uniqcustid', displayName : 'Customer ID', width: 150},
       {field: 'customername', displayName : 'Customer Name', width: 150 }, 
       {field: 'address',  displayName: 'Address', 
-        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}},  {{COL_FIELD.pincode}}</div>',
+        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}}</div>',
         width: "300",
         filter: {condition: uiGridConstants.filter.CONTAINS}
       },
@@ -162,7 +167,7 @@ angular.module('myApp.controllers', [])
                     appScopeProvider: $scope,
                     rowHeight: 40,
                     columnDefs: [
-                    {name: "address", displayName: 'Address', cellTemplate: '<div class="ui-grid-cell-contents">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}},  {{COL_FIELD.pincode}}</div>',
+                    {name: "address", displayName: 'Address', cellTemplate: '<div class="ui-grid-cell-contents">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}}</div>',
                       width: "300"},
                     {name: "payment.paidamt", displayName: 'Paid Amt', cellTemplate: '<div class="ui-grid-cell-contents"><input type="number" ng-model="row.entity.payment.paidamt"/></div>'},
                     {name: "payment.paidyear", displayName: 'Paid Year', cellTemplate: '<div class="ui-grid-cell-contents"><input type="number" ng-model="row.entity.payment.paidyear"/></div>'},

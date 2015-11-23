@@ -77,13 +77,15 @@ function insertLookups(){
 		        {'lookuptype': 'TERMINATION_REASONS', 'lookupvalue': 'Indisciplined', 'createddate': new Date(Date.now())},
 		        {'lookuptype': 'TERMINATION_REASONS', 'lookupvalue': 'Other reasons', 'createddate': new Date(Date.now())},
 		        {'lookuptype': 'PAYMENT_TYPE', 'lookupvalue': 'Advance', 'createddate': new Date(Date.now())},
-		        {'lookuptype': 'PAYMENT_TYPE', 'lookupvalue': 'Subscription', 'createddate': new Date(Date.now())}
+		        {'lookuptype': 'PAYMENT_TYPE', 'lookupvalue': 'Subscription', 'createddate': new Date(Date.now())},
+		        {'lookuptype': 'PAYMENT_METHOD', 'lookupvalue': 'Direct Payment', 'createddate': new Date(Date.now())},
+		        {'lookuptype': 'PAYMENT_METHOD', 'lookupvalue': 'Through Agent', 'createddate': new Date(Date.now())}
 
 		    ];
 		    Lookup.collection.insert(lookups, function(err){
 		    	if(err){
 		    		console.log('Error in inserting lookups');
-		    		return handleError(err);
+		    		return handleError(err);	
 		    	}
 		    });
 }
@@ -189,13 +191,11 @@ router.post('/customer/add', function(req, res){
 		address : {
 			street1 : req.body.address.street1,
 			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
+			area: req.body.address.area
 		},
 		contacts : {
 			landlineno : req.body.contacts.landlineno,
-			mobileno : req.body.contacts.mobileno,
-			email: req.body.contacts.email
+			mobileno : req.body.contacts.mobileno
 		},
 		createddate: new Date(Date.now())
 	});
@@ -215,13 +215,11 @@ router.post('/customer/edit', function(req, res){
 		address : {
 			street1 : req.body.address.street1,
 			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
+			area: req.body.address.area
 		},
 		contacts : {
 			landlineno : req.body.contacts.landlineno,
-			mobileno : req.body.contacts.mobileno,
-			email: req.body.contacts.email
+			mobileno : req.body.contacts.mobileno
 		},
 		updateddate : new Date(Date.now())
 	};
@@ -259,15 +257,15 @@ router.post('/connection/add', function(req, res){
 		advanceamt : req.body.advanceamt,
 		hasamp: hasamp,
 		subscriptionamt : req.body.subscriptionamt,
-		paymentdueon: req.body.paymentdueon,
+		conpaymentdate: req.body.conpaymentdate,
+		paymentmethod: req.body.paymentmethod,
 		amountdue: 0,
 		paymentstatus : 'No Dues',
 		connectionstartdate: new Date(Date.now()),
 		address : {
 			street1 : req.body.address.street1,
 			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
+			area: req.body.address.area
 		},
 		createddate: new Date(Date.now())
 	};
@@ -289,16 +287,16 @@ router.post('/connection/update', function(req, res){
 	Customer.findOne({uniqcustid: req.body.customerid}, function(err, customer){
 		var deactivateCustomer = false;
 		var connection = customer.connections.id(req.body._id);
-		connection.advanceamt = req.body.advanceamt,
-		connection.hasamp = req.body.hasamp,
-		connection.subscriptionamt = req.body.subscriptionamt,
-		connection.paymentdueon = req.body.paymentdueon,
-		connection.active = req.body.active,
-		connection.address.street1 =  req.body.address.street1,
-		connection.address.street2 = req.body.address.street2,
-		connection.address.area = req.body.address.area,
-		connection.address.pincode = req.body.address.pincode
-		connection.updateddate = new Date(Date.now())
+		connection.advanceamt = req.body.advanceamt;
+		connection.hasamp = req.body.hasamp;
+		connection.subscriptionamt = req.body.subscriptionamt;
+		connection.conpaymentdate = req.body.conpaymentdate;
+		connection.paymentmethod = req.body.paymentmethod;
+		connection.active = req.body.active;
+		connection.address.street1 =  req.body.address.street1;
+		connection.address.street2 = req.body.address.street2;
+		connection.address.area = req.body.address.area;
+		connection.updateddate = new Date(Date.now());
 		if(!req.body.active){
 			connection.deacitvationreason = req.body.deacitvationreason;
 			connection.deacitvationdate = new Date(Date.now());

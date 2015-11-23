@@ -13,6 +13,9 @@ function getMonthName(monthNumber) { //0 = January
 
 	
 /**********************/
+//solution: update amount due on last day of every month at EOD
+//solution: update paymentstatus on convenient payment date EOD
+//validate if connection start date check this
 // conditions to check: job should not include values already verified and updated for this month.
 // do not include customers who haverecdently started a connection and their payment amount is due only next month.
 db.once('open', function() {
@@ -30,7 +33,7 @@ db.once('open', function() {
 			//loop through customers to find connections for each customer
 			var checkPayment = function(connection){
 	      		var subscriptionAmt = connection.subscriptionamt;
-	      		var duedate = connection.paymentdueon;
+	      		var duedate = connection.conpaymentdate;
 	            //console.log("Customer "+ connection.customerid +" is to pay "+subscriptionAmt+" by "+ duedate+ " of this month for connection"+ connection._id);
 	            if(new Date().getDate() >= duedate){
 	            	var payments = connection.payments;
