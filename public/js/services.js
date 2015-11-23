@@ -13,12 +13,11 @@ angular.module('myApp.services', []).
           return $http.post('api/customer/add', customer);
         },
 
-        getAllCustomers : function(){
+        getActiveCustomers : function(){
           return $http.get('api/customer');
         },
 
         getCustomer : function(id){
-          console.log('getDetails for : '+id);
           return $http.get('api/customer/'+id);
         },
 
@@ -52,9 +51,11 @@ angular.module('myApp.services', []).
         return $http.post('api/connection/payment/add', payment);
       },
 
-      getPayments : function(connectionId){
-        return $http.get('api/connection/payment/'+connectionId);
+      getPayments : function(connection){
+        return $http.post('api/payments', connection);
       }
+
+
     }
   }])
   .factory('agentsFactory', ['$http', function($http){

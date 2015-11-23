@@ -130,9 +130,8 @@
 </form>
 <div class="row" ng-show="displayConnections" >
    <div class="well col-md-12">
-		<legend class="subheading"> Connection Details </legend>
+		<legend class="subheading"> Connection Details <button ng-click="toggleModal('Add Connection')" class="btn btn-xs btn-success pull-right">Add Connection</button></legend>
 		
-		<button ng-click="toggleModal('Add Connection')" class="btn btn-success">Add Connection</button>
 		<table class="table">
 			<thead>
 				<th>Active</th>
@@ -145,7 +144,7 @@
 				<th>Action</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="connection in connections">
+				<tr ng-repeat="connection in customer.connections">
 					<td class="col-md-1"><img ng-if="connection.active" ng-src="img/truetick.png"/><img ng-if="!connection.active" ng-src="img/falsecross.png"/></td>
 					<td class="col-md-1"><img ng-if="connection.hasamp" ng-src="img/truetick.png"/><img ng-if="!connection.hasamp" ng-src="img/falsecross.png"/></td>
 					<td class="col-md-1">{{connection.advanceamt}}</td>
@@ -154,11 +153,11 @@
 					<td class="col-md-1">{{connection.connectionstartdate  | date: 'MMM dd yyyy'}}</td>
 					<td class="col-md-3">{{connection.address.street1}}, {{connection.address.street2}}, {{connection.address.area}}, {{connection.address.city}}, {{connection.address.pincode}}</td>
 					<td class="col-md-1"><button ng-click="toggleModal('Edit Connection', connection)" class="btn btn-success">Edit</button></td>
-					<td class="col-md-1"><button ng-click="toggleModal('Make Payment', connection)" class="btn btn-success">Make Payment</button></td>
+					<td class="col-md-1"><button ng-click="toggleModal('View Payment', connection)" class="btn btn-success">View Payment</button></td>
 				</tr>
 			</tbody>
 		</table>
-		<modal visible="showModal"></modal>
+		<conmodal visible="showModal"></conmodal>
 	</div>
 </div>
 

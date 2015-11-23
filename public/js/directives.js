@@ -15,7 +15,7 @@ angular.module('myApp.directives', []).
 		template: '<p>{{address.street1}}, {{address.street2}}, {{address.area}}, {{address.city}}, {{address.pincode}}</p>'
     };
   })
-  .directive('modal', function () {
+  .directive('conmodal', function () {
     return {
       templateUrl: 'partials/add-edit-connections.html',
       restrict: 'E',
@@ -26,7 +26,37 @@ angular.module('myApp.directives', []).
         scope.title = attrs.title;
 
         scope.$watch(attrs.visible, function(value){
-          console.log(value);
+          if(value == true)
+            $(element).show();
+          else
+            $(element).hide();
+        });
+
+        $(element).on('shown.bs.modal', function(){
+          scope.$apply(function(){
+            scope.$parent[attrs.visible] = true;
+          });
+        });
+
+        $(element).on('hidden.bs.modal', function(){
+          scope.$apply(function(){
+            scope.$parent[attrs.visible] = false;
+          });
+        });
+      }
+    };
+  })
+  .directive('paymodal', function () {
+    return {
+      templateUrl: 'partials/make-payment.html',
+      restrict: 'E',
+      transclude: true,
+      replace:true,
+      scope:true,
+      link: function postLink(scope, element, attrs) {
+        scope.title = attrs.title;
+
+        scope.$watch(attrs.visible, function(value){
           if(value == true)
             $(element).show();
           else

@@ -3,10 +3,11 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var LookupType = require('../models/lookuptype.js');
 var Lookup = require('../models/lookup.js');
-var Customer = require('../models/customer.js');
-var ConPayment = require('../models/connection.js');
-var Connection = ConPayment.Connection;
-var Payment = ConPayment.Payment;
+var CableSchemas = require('../models/customer.js');
+//var ConPayment = require('../models/connection.js');
+var Customer = CableSchemas.Customer;
+var CConnection = CableSchemas.CConnection;
+var Payment = CableSchemas.Payment;
 var Agent = require('../models/agent.js');
 
 /** reusable function starts**/
@@ -182,8 +183,9 @@ router.post('/customer/add', function(req, res){
 		dateofbirth: req.body.dateofbirth,
 		uniqcustid : derivedId,
 		custstartdate : new Date(Date.now()), 
-		active: true,
-		paymentstatus : "",
+		active: false,
+		paymentstatus : 'No Dues',
+		paymentdue: 0,
 		address : {
 			street1 : req.body.address.street1,
 			street2: req.body.address.street2,
@@ -210,7 +212,6 @@ router.post('/customer/edit', function(req, res){
 		idprooftype: req.body.idprooftype,
 		idproofno: req.body.idproofno,
 		dateofbirth: req.body.dateofbirth,
-		paymentstatus : "",
 		address : {
 			street1 : req.body.address.street1,
 			street2: req.body.address.street2,
@@ -235,22 +236,32 @@ router.get('/customer/:id', function(req, res){
 	Customer.findOne({_id: customerId}, function(err, customer){
 		handleError(err,customer, res);
 	})
+	/*Customer.findOne({_id: customerId}).run(function (err, customer) {
+  		customer.connections.populate('payments', function (err) {
+  			if(err) 
+    		console.log(customer.connections.payments)
+  		})
+	})*/
 });
 
 router.get('/customer', function(req, res){
-	Customer.find(function(err, customers){
+	Customer.find({active: true}, function(err, customers){
 		handleError(err, customers, res);
 	})
 });
 
 router.post('/connection/add', function(req, res){
-	var connection = new Connection({
+	var hasamp = false;
+	if(req.body.hasamp)	hasamp = true;
+	var connection = {
 		customerid : req.body.customerid,
 		active : req.body.active,
 		advanceamt : req.body.advanceamt,
-		hasamp: req.body.hasamp,
+		hasamp: hasamp,
 		subscriptionamt : req.body.subscriptionamt,
 		paymentdueon: req.body.paymentdueon,
+		amountdue: 0,
+		paymentstatus : 'No Dues',
 		connectionstartdate: new Date(Date.now()),
 		address : {
 			street1 : req.body.address.street1,
@@ -259,71 +270,80 @@ router.post('/connection/add', function(req, res){
 			pincode: req.body.address.pincode
 		},
 		createddate: new Date(Date.now())
-	
-	});
-	
-	connection.save(function(err){
-		if(err)
-			handleError(err);
-		/*Customer.findOne({uniqcustid: customerid}, function(err, customer){
-			customer.connections.push(connection._id);
-			customer.save(function(err, connection, res){
-				handleError(err, connection, res);	
-			});
-		});*/
+	};
+	console.log(connection);
+	Customer.findOne({uniqcustid: req.body.customerid}, function(err, customer){
+		console.log(customer);
+		customer.connections.push(connection);
+		customer.active = true;
+		customer.save(function(err, customer){
+			if(err) console.log(err);
+			else 
+				res.send(customer);
+		});
 	});
 });
 
 router.post('/connection/update', function(req, res){
-	var rmFromCustomer = false;
-	var updateSet = {
-		advanceamt : req.body.advanceamt,
-		hasamp: req.body.hasamp,
-		subscriptionamt : req.body.subscriptionamt,
-		paymentdueon: req.body.paymentdueon,
-		active : req.body.active,
-		address : {
-			street1 : req.body.address.street1,
-			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
-		},
-		updateddate : new Date(Date.now())
-	};
-	if(!req.body.active){
-		updateSet['deacitvationreason'] = req.body.deacitvationreason;
-		updateSet['deacitvationdate'] = new Date(Date.now());
-		rmFromCustomer = true;
-	}
-	if(req.body.exempt){
-		updateSet['exemptionreason'] = req.body.exemptionreason;
-		updateSet['exemptiontill'] = req.body.exemptiontill;
-	}
 	
-	Connection.findByIdAndUpdate(req.body._id, { $set: updateSet}, function (err, connection) {
-  		if (err) return handleError(err);
-  		/*if(rmFromCustomer) {
-  			Customer.findOne({uniqcustid: req.body.customerId}, function(err, customer){
-  				if(err) handleError(err);
-  				var index = customer.connections.indexOf(connection._id);
-  				if(index >= 0) {
-  					customer.connections.splice(index, 1);
-  					customer.save(function (err){
-  						if(err) handleError(err);
-  					});
-  				}
-  			});
-  		}*/
-  			
-  		res.send(connection);
-  		
+	Customer.findOne({uniqcustid: req.body.customerid}, function(err, customer){
+		var deactivateCustomer = false;
+		var connection = customer.connections.id(req.body._id);
+		connection.advanceamt = req.body.advanceamt,
+		connection.hasamp = req.body.hasamp,
+		connection.subscriptionamt = req.body.subscriptionamt,
+		connection.paymentdueon = req.body.paymentdueon,
+		connection.active = req.body.active,
+		connection.address.street1 =  req.body.address.street1,
+		connection.address.street2 = req.body.address.street2,
+		connection.address.area = req.body.address.area,
+		connection.address.pincode = req.body.address.pincode
+		connection.updateddate = new Date(Date.now())
+		if(!req.body.active){
+			connection.deacitvationreason = req.body.deacitvationreason;
+			connection.deacitvationdate = new Date(Date.now());
+			deactivateCustomer = true;
+		}else if(!customer.active){
+			connection.deacitvationreason = "";
+			customer.active = true;
+		}
+		
+		customer.save(function(err, customer){
+			if(err) console.log(err);
+			else {
+				if(deactivateCustomer){
+					Customer.find({_id: customer._id, 'connections.active': true}, function(err, found){
+						if(found.length == 0) {
+							customer.active = false;
+							customer.save(function(err, customer){
+								if(err) console.log('Error in deactivating customer')
+								else
+									res.send(customer);
+
+							});
+						}
+					})
+				} else {
+					res.send(customer);
+				}
+			}
+		});
 	});
 });	
 
 router.get('/connection/:customerid', function(req, res){
 	var customerId = req.params.customerid;
 	
-	Connection.find({customerid: customerId})
+	CConnection.find({customerid: customerId})
+	.populate('payments')
+	.exec(function(err, connections){
+		handleError(err, connections, res);
+	});
+});
+router.get('/connection/:id', function(req, res){
+	var connectionId = req.params.id;
+	
+	CConnection.find({_id: connectionId})
 	.populate('payments')
 	.exec(function(err, connections){
 		handleError(err, connections, res);
@@ -403,35 +423,63 @@ router.post('/agent/edit', function(req, res){
 	});
 });
 
+
+
 router.post('/connection/payment/add', function(req, res){
 	var connectionId = req.body.connectionId;
-	var paidForMonth = req.body.paidForMonth;
-	console.log(paidForMonth);
+	
 	var payment = new Payment({
 		paidamt : req.body.paidamt,
 		paiddate : new Date(Date.now()),
-		paidformonth : req.body.paidformonth,
+		paidyear: req.body.paidyear,
+		paidmonth : req.body.paidmonth,
 		paidto : req.body.paidto,
-		paymenttype : req.body.type
+		paymenttype : 'Subscription'
 	});
-	console.log(payment);
-	console.log(connectionId);
+	
 	payment.save(function(err){
 		if(err)
 			handleError(err);
 		else {
-			Connection.findOne({'_id': connectionId}, function(err, connection){
-				if(err)
-					handleError(err);
-				else {
-					connection.payments.push(payment);
-					connection.save()
+			Customer.findOne({'uniqcustid': req.body.customerId}, function(err, customer){
+				var connection = customer.connections.id(connectionId);
+				if(payment.paymenttype == 'Subscription') {
+					var currentAmtDue = (typeof connection.amountdue != "undefined") ? connection.amountdue : 0;
+					connection.amountdue = currentAmtDue - payment.paidamt;
+					currentAmtDue = (typeof customer.paymentdue != "undefined") ? customer.paymentdue : 0;
+					customer.paymentdue = currentAmtDue - payment.paidamt;
 				}
-			});
+				
+				if(connection.amountdue <= 0) 
+					connection.paymentstatus = 'No Dues';
+				else
+					connection.paymentstatus = 'Pending';
+
+				if(customer.paymentdue <= 0){
+					customer.paymentstatus = 'No Dues';
+				}else{
+					customer.paymentstatus = 'Pending';
+				}
+				connection.payments.push(payment);
+				
+				customer.save(function(err, customer){
+					if(err) console.log('Error in updating payment', err, err.stack.split('\n'));
+					else
+						res.send(customer);
+
+				});
+			})
 		}
 	});
 });
 
+router.post('/payments', function(req,res){
+	var payments = req.body.payments;
+	Payment.find({'_id': { $in:payments}},function(err, payments){
+		if(err) console.log('Error in updating payment', err, err.stack.split('\n'));
+		res.send(payments);
+	});
+});
 
 /** api ends **/
 

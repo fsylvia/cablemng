@@ -1,0 +1,38 @@
+<div id="paymodal" class="modal">
+	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" aria-hidden="true" ng-click="togglePayModal('')">&times;</button>
+        		<h4 class="modal-title">Make Payment</h4>
+      		</div>
+      		<div class="modal-body" >
+        		<div class="well">
+        			<form class="form-horizontal" name="paymentForm" novalidate>
+	   					<table class="table table-striped table-hover ">
+    					    <thead>
+					            <tr>
+					            	<th>Payment Type</th>
+					            	<th>Paid Amount</th>
+					            	<th>Paid for year</th>
+					            	<th>Paid for month</th>
+					            	<th>Agent Name</th>
+					            	<th></th>
+					            </tr>
+          					</thead>
+          					<tbody>
+            					<tr>
+              						<td><select class="form-control"  id="paymenttypes" ng-model="payment.type"><option ng-repeat="type in paymenttypes" value="{{type.lookupvalue}}">{{type.lookupvalue}}</option></select></td>
+              						<td><input type="number" ng-model="payment.paidamt" value="" placeholder="100"/></td>
+              						<td><input type="number" ng-model="payment.paidyear" value="" placeholder="100"/></td>
+						            <td><input type="text" ng-model="payment.paidmonth" value="" /></td>    
+						            <td><select class="form-control"  id="paidto" ng-model="payment.paidto"><option ng-repeat="agent in agents" value="{{agent.agentname}}">{{agent.agentname}}</option></select></td>
+              						<td><button name="save" class="btn btn-success btn-sm" ng-click="savePayment()">Save Payment</button></td>
+            					</tr>
+            				</tbody>
+        				</table>
+        			</form>
+        		</div>
+        	</div>
+        </div>
+    </div>
+</div>

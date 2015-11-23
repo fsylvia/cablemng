@@ -9,7 +9,7 @@ var Payment = new Schema({
 	paymenttype : String,
 	connectionId : String
 });
-var Connection = new Schema({
+var CConnection = new Schema({
 	customerid : String,
 	advanceamt : Number,
 	hasamp: Boolean,
@@ -35,6 +35,6 @@ var Connection = new Schema({
 	updateddate : Date
 });
 var Payment = mongoose.model('Payment', Payment);
-var Connection = mongoose.model('Connection', Connection);
-var ConPayment = {'Connection' : Connection, 'Payment': Payment};
+var CConnection = mongoose.model('CConnection', CConnection);
+var ConPayment = {'CConnection' : CConnection, 'Payment': Payment};
 module.exports = ConPayment;

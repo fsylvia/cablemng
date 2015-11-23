@@ -25,6 +25,9 @@ angular.module('myApp.controllers', [])
       }, function(err){
         console.log("Error in getting id proof types");
       });
+      $scope.months = [{'monthName': 'Jan'}, {'monthName': 'Feb'}, {'monthName': 'Mar'}, {'monthName': 'Apr'}, 
+      {'monthName': 'May'}, {'monthName': 'Jun'}, {'monthName': 'Jul'}, {'monthName': 'Aug'},
+      {'monthName': 'Sep'}, {'monthName': 'Oct'}, {'monthName': 'Nov'}, {'monthName': 'Dec'}];
       $scope.dateFormat="yyyy-MM-dd";
       $scope.datePattern = "";
       $scope.pincodePattern = /^\d{6}$/;
@@ -87,68 +90,115 @@ angular.module('myApp.controllers', [])
     getLookup();
     
   }])
-  .controller('CustomerCtrl', ['$scope', 'customersFactory', 'connectionFactory', 'uiGridConstants', 
-    function($scope, customersFactory, connectionFactory, uiGridConstants) {
-      customersFactory.getAllCustomers().then(
-        function(res){
+  .controller('CustomerCtrl', ['$scope', '$filter', 'customersFactory', 'connectionFactory', 'uiGridConstants', 'agentsFactory', 'paymentsFactory',
+    function($scope, $filter, customersFactory, connectionFactory, uiGridConstants, agentsFactory, paymentsFactory) {
+      $scope.currentYear = new Date().getFullYear();
+      $scope.previousMonth = $filter('monthName')(new Date().getMonth() -1);
+      $scope.payment = {'paidmonth' : $scope.previousMonth, 'paidyear' : $scope.currentYear, 'paymenttype' : 'Subscription'};
+      
+      agentsFactory.getAgents().then(function(res){
+        $scope.agents = res.data;
+      })
+       
+      var getCustomers = function (){  
+        customersFactory.getActiveCustomers().then(function(res){
           $scope.gridOptions.data = res.data;
         }, function(err){
           console.log('Error in getting customer list'+err.message);
-        });   
-      
-      $scope.columns = [{ field: 'uniqcustid', displayName : 'Customer ID'},
-                        { field: 'customername', displayName : 'Customer Name' }, 
-                        {field: 'address.street1', displayName : 'Door No'}, 
-                        {field: 'address.street2', displayName : 'Street'}, 
-                        {field: 'address.area', displayName : 'Area'}, 
-                        {field: 'address.pincode', displayName : 'Pincode'}, 
-                        {field: 'contacts.landlineno', displayName : 'LAND Line No'},
-                        {field: 'contacts.mobileno', displayName : 'Mobile No'},
-                        {field: 'paymentstatus', displayName : 'Paid'},
-                        {field: 'paymentdue', displayName : 'Amount Due'},
-                        {
-                          field: '_id',
-                          enableFiltering: false,
-                          name: ' ', 
-                          cellTemplate: '<div class="ui-grid-cell-contents"><a href="#/customer/add-edit/{{ COL_FIELD }}" class="btn btn-success btn-xs" >Edit</a></div>',
-                          width: "50"
-                        }];
-
+        }); 
+      };
+      getCustomers();
+      $scope.columns = [
+      {
+        field: 'active', 
+        displayName: 'Active',
+        width:"70" ,
+        cellTemplate: '<div class="ui-grid-cell-contents"><img ng-if="COL_FIELD" ng-src="img/truetick.png"/><img ng-if="!COL_FIELD" ng-src="img/falsecross.png"/></div>'
+      },
+      {field: 'uniqcustid', displayName : 'Customer ID', width: 150},
+      {field: 'customername', displayName : 'Customer Name', width: 150 }, 
+      {field: 'address',  displayName: 'Address', 
+        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}},  {{COL_FIELD.pincode}}</div>',
+        width: "300",
+        filter: {condition: uiGridConstants.filter.CONTAINS}
+      },
+      {field: 'contacts',  displayName: 'Contact No', 
+        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.landlineno}},  {{COL_FIELD.mobileno}}</div>',
+        width: "200"
+      },
+      {field: 'paymentstatus', displayName : 'Paid Status', width: "90"},
+      {field: 'paymentdue', displayName : 'Amount Due', width: "100"},
+      {
+        field: '_id',
+        enableFiltering: false,
+        name: ' ', 
+        cellTemplate: '<div class="ui-grid-cell-contents"><a href="#/customer/add-edit/{{ COL_FIELD }}" class="btn btn-success btn-xs" >Edit</a></div>',
+        width: "50"
+      }];
+     
+      $scope.savePayment = function(connection){
+        $scope.payment = connection.payment;
+        $scope.payment.connectionId = connection._id;
+        $scope.payment.customerId = connection.customerid;
+        
+        paymentsFactory.addPayment($scope.payment).then(function(res){
+          getCustomers();
+        });
+        
+      }
       $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: $scope.columns,
-      };
-      $scope.disableCustomer = function(){
+        rowHeight: 40,
+        expandableRowTemplate: 'partials/expandableRowTemplate.html',
+        expandableRowHeight: 150,
+        
+        onRegisterApi: function (gridApi) {
+               
+            gridApi.expandable.on.rowExpandedStateChanged($scope, function (row) {
 
+                if (row.isExpanded) {
+                  row.entity.subGridOptions = {
+                    appScopeProvider: $scope,
+                    rowHeight: 40,
+                    columnDefs: [
+                    {name: "address", displayName: 'Address', cellTemplate: '<div class="ui-grid-cell-contents">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}},  {{COL_FIELD.pincode}}</div>',
+                      width: "300"},
+                    {name: "payment.paidamt", displayName: 'Paid Amt', cellTemplate: '<div class="ui-grid-cell-contents"><input type="number" ng-model="row.entity.payment.paidamt"/></div>'},
+                    {name: "payment.paidyear", displayName: 'Paid Year', cellTemplate: '<div class="ui-grid-cell-contents"><input type="number" ng-model="row.entity.payment.paidyear"/></div>'},
+                    {name: "payment.paidmonth", displayName: 'Paid Month', cellTemplate: '<div class="ui-grid-cell-contents"><select id="paidmonth" ng-model="row.entity.payment.paidmonth"><option ng-repeat="month in grid.appScope.months" value="{{month.monthName}}">{{month.monthName}}</option></select></div>'},
+                    {name: "payment.paidto", displayName: 'Agent', cellTemplate: '<div class="ui-grid-cell-contents"><select id="paidto" ng-model="row.entity.payment.paidto"><option ng-repeat="agent in grid.appScope.agents" value="{{agent.agentname}}">{{agent.agentname}}</option></select></div>'},
+                    {name: 'amountdue', displayName: 'Amount Due'},
+                    {name: "paymentstatus", displayName: 'Status'}, 
+                    {field: "_id", displayName: ' ', cellTemplate: '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.savePayment(row.entity)" class="btn btn-info btn-xs">Pay</button></div>'}
+                  ]
+                };
+                  for(var i = 0; i<row.entity.connections.length; i++){
+                    //preset values for payment entry
+                    row.entity.connections[i].payment = {'paidamt' : row.entity.connections[i].subscriptionamt, 
+                                                          'paidyear' : $scope.currentYear,
+                                                          'paidmonth' : $scope.previousMonth
+                                                        }
+                  }
+                  row.entity.subGridOptions.data = row.entity.connections;
+                    
+                }
+            });
+        }
       };
+      
   }])
   .controller('AddEditCustomerCtrl', [
-    '$scope', '$routeParams', 'lookupFactory', 'customersFactory', 'connectionFactory', 'agentsFactory', 'paymentsFactory', 
-    function($scope, $routeParams, lookupFactory, customersFactory, connectionFactory, agentsFactory, paymentsFactory){
+    '$scope', '$routeParams', 'lookupFactory', 'customersFactory', 'connectionFactory',  'paymentsFactory', 
+    function($scope, $routeParams, lookupFactory, customersFactory, connectionFactory, paymentsFactory){
       $scope.customerId  = $routeParams.id;
       $scope.heading  = "Add a New  Customer";
       $scope.customer = {};
-      $scope.connection = {'active' : true, 'paymentdueon': 5, 'advanceamt':500, 'subscriptionamt':120};
       $scope.showModal = false;
       $scope.modalHeading = "";
       $scope.displayConnections = false;
-      
-      /** reusable functions **/
-      
-      function getConnections(){
-        connectionFactory.getAllConnectionsForCustomer($scope.customer.uniqcustid).then(function(res){
-          $scope.connections = res.data;
-        }, function(err){
-          console.log('Error in getting the connections for a customer');
-        });
-      }
 
-      function refreshConnections(){
-        $scope.toggleModal("");
-        getConnections();
-      }
-      /** reusable functions **/
-     
+      
       $scope.openCal = function($event, flag) {
         if(flag =='dobstatus') $scope.dobStatus.opened = true;
         if(flag =='pfmstatus') $scope.pfmStatus.opened = true;
@@ -157,12 +207,10 @@ angular.module('myApp.controllers', [])
       $scope.pfmStatus = { opened: false };
       if  ($scope.customerId !=  0)  {
         $scope.heading  = "Edit Customer";
-        
         $scope.displayConnections = true;
         customersFactory.getCustomer($scope.customerId).then(function(res){
           $scope.customer = res.data;
           $scope.customer.dateofbirth = new Date($scope.customer.dateofbirth);
-          getConnections();
         }, function(err){
           console.log("Error in finding customer data for Id : "+$scope.customerId + ".Error: "+err.message);
         });
@@ -184,14 +232,30 @@ angular.module('myApp.controllers', [])
       $scope.toggleModal = function(heading, connection){
          $scope.showModal = !$scope.showModal;
          $scope.modalHeading = heading;
-         if (typeof connection != "undefined") {
-            $scope.connection = connection;
-            $scope.payment = {'connectionId' : connection._id, 'paidamt' : connection.subscriptionamt, 'type' : 'Subscription'};
-            $scope.payments = connection.payments;
-            
+
+         if($scope.showModal) {
+           if (typeof connection != "undefined") {
+              $scope.connection = connection;
+              
+              if($scope.modalHeading == 'View Payment'){
+                paymentsFactory.getPayments(connection).then(function(res){
+                  $scope.payments = res.data;
+                });
+              }
+           }
+           else {
+              $scope.connection = {'customerid': $scope.customer.uniqcustid, 'active' : true, 'paymentdueon': 5, 'advanceamt':500, 'subscriptionamt':120};
+              $scope.connection.address = $scope.customer.address;
+           }
          }
-         else {
-            $scope.connection.address = $scope.customer.address;
+         else{
+            //clean this later
+            customersFactory.getCustomer($scope.customerId).then(function(res){
+              $scope.customer = res.data;
+              $scope.customer.dateofbirth = new Date($scope.customer.dateofbirth);
+            }, function(err){
+              console.log("Error in finding customer data for Id : "+$scope.customerId + ".Error: "+err.message);
+            });
          }
       }
 
@@ -202,25 +266,17 @@ angular.module('myApp.controllers', [])
         $scope.connection.customerid = $scope.customer.uniqcustid;
         if(typeof $scope.connection._id != 'undefined'){
           connectionFactory.updateConnection($scope.connection).then(function(res){
-            refreshConnections();
+            $scope.toggleModal('');    
           });
         } else {
           connectionFactory.saveConnectionDetails($scope.connection).then(function(res){
-            refreshConnections();
+            $scope.toggleModal('');    
+
           });
         }
       };
-      agentsFactory.getAgents().then(function(res){
-        $scope.agents = res.data;
-      })
-
-
-      $scope.savePayment = function(){
-
-        paymentsFactory.addPayment($scope.payment).then(function(res){
-          refreshConnections();
-        });
-      }
+      
+     
       
   }])
   .controller('AgentCtrl', ['$scope', 'agentsFactory', function($scope, agentsFactory) {
