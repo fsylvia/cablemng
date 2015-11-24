@@ -108,6 +108,11 @@ angular.module('myApp.controllers', [])
       var getCustomers = function (){  
         customersFactory.getActiveCustomers().then(function(res){
           $scope.gridOptions.data = res.data;
+          angular.forEach($scope.gridOptions.data,function(row){
+            row.getAddress = function(){
+              return this.address.street1 + ', ' + this.address.street2 + ', ' + this.address.area;
+            }
+          });
         }, function(err){
           console.log('Error in getting customer list'+err.message);
         }); 
@@ -122,11 +127,7 @@ angular.module('myApp.controllers', [])
       },
       {field: 'uniqcustid', displayName : 'Customer ID', width: 150},
       {field: 'customername', displayName : 'Customer Name', width: 150 }, 
-      {field: 'address',  displayName: 'Address', 
-        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.street1}},  {{COL_FIELD.street2}},  {{COL_FIELD.area}}</div>',
-        width: "300",
-        filter: {condition: uiGridConstants.filter.CONTAINS}
-      },
+      {field: 'getAddress()',  displayName: 'Address', width: "300", filter: {condition: uiGridConstants.filter.CONTAINS}},
       {field: 'contacts',  displayName: 'Contact No', 
         cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.landlineno}},  {{COL_FIELD.mobileno}}</div>',
         width: "200"
@@ -151,6 +152,8 @@ angular.module('myApp.controllers', [])
         });
         
       }
+
+      
       $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: $scope.columns,
