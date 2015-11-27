@@ -282,7 +282,8 @@ angular.module('myApp.controllers', [])
         $scope.agents = res.data;
       })
   }])
-  .controller('AddEditAgentCtrl', ['$scope', '$routeParams', 'lookupFactory', 'agentsFactory', function($scope, $routeParams, lookupFactory, agentsFactory){
+  .controller('AddEditAgentCtrl', ['$scope', '$routeParams', 'lookupFactory', 'agentsFactory', 'flashMessageService', 
+    function($scope, $routeParams, lookupFactory, agentsFactory, flashMessageService){
     $scope.agentId = $routeParams.id;
     $scope.header = "Add Agent";
     $scope.agent = {active: true};
