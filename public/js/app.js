@@ -13,7 +13,8 @@ angular.module('myApp', [
   'ui.grid',
   'ui.grid.expandable', 
   'ui.grid.selection', 
-  'ui.grid.pinning'
+  'ui.grid.pinning',
+  'message.flash'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/customer/add-edit/:id', {templateUrl: 'partials/add-edit-customers.html', controller: 'AddEditCustomerCtrl'});

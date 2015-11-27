@@ -95,8 +95,8 @@ angular.module('myApp.controllers', [])
     getLookup();
     
   }])
-  .controller('CustomerCtrl', ['$scope', '$filter', 'customersFactory', 'connectionFactory', 'uiGridConstants', 'agentsFactory', 'paymentsFactory',
-    function($scope, $filter, customersFactory, connectionFactory, uiGridConstants, agentsFactory, paymentsFactory) {
+  .controller('CustomerCtrl', ['$scope', '$filter', 'customersFactory', 'connectionFactory', 'uiGridConstants', 'agentsFactory', 'paymentsFactory', 'flashMessageService',
+    function($scope, $filter, customersFactory, connectionFactory, uiGridConstants, agentsFactory, paymentsFactory, flashMessageService) {
       $scope.currentYear = new Date().getFullYear();
       $scope.previousMonth = $filter('monthName')(new Date().getMonth() -1);
       $scope.payment = {'paidmonth' : $scope.previousMonth, 'paidyear' : $scope.currentYear, 'paymenttype' : 'Subscription'};
@@ -149,6 +149,7 @@ angular.module('myApp.controllers', [])
         
         paymentsFactory.addPayment($scope.payment).then(function(res){
           getCustomers();
+          flashMessageService.setMessage("Payment Saved Successfully");
         });
         
       }
@@ -197,8 +198,8 @@ angular.module('myApp.controllers', [])
       
   }])
   .controller('AddEditCustomerCtrl', [
-    '$scope', '$routeParams', 'lookupFactory', 'customersFactory', 'connectionFactory',  'paymentsFactory', 
-    function($scope, $routeParams, lookupFactory, customersFactory, connectionFactory, paymentsFactory){
+    '$scope', '$routeParams', 'lookupFactory', 'customersFactory', 'connectionFactory',  'paymentsFactory', 'flashMessageService', 
+    function($scope, $routeParams, lookupFactory, customersFactory, connectionFactory, paymentsFactory, flashMessageService){
       $scope.customerId  = $routeParams.id;
       $scope.heading  = "Add a New  Customer";
       $scope.customer = {};
@@ -206,6 +207,14 @@ angular.module('myApp.controllers', [])
       $scope.modalHeading = "";
       $scope.displayConnections = false;
 
+      function getCustomer(){
+        customersFactory.getCustomer($scope.customerId).then(function(res){
+          $scope.customer = res.data;
+          $scope.customer.dateofbirth = new Date($scope.customer.dateofbirth);
+        }, function(err){
+          console.log("Error in finding customer data for Id : "+$scope.customerId + ".Error: "+err.message);
+        });
+      }
       
       $scope.openCal = function($event, flag) {
         if(flag =='dobstatus') $scope.dobStatus.opened = true;
@@ -216,25 +225,17 @@ angular.module('myApp.controllers', [])
       if  ($scope.customerId !=  0)  {
         $scope.heading  = "Edit Customer";
         $scope.displayConnections = true;
-        customersFactory.getCustomer($scope.customerId).then(function(res){
-          $scope.customer = res.data;
-          $scope.customer.dateofbirth = new Date($scope.customer.dateofbirth);
-        }, function(err){
-          console.log("Error in finding customer data for Id : "+$scope.customerId + ".Error: "+err.message);
-        });
+        getCustomer();
       }
 
 
       $scope.saveCustomer = function(){
-        if($scope.customerId != 0){
-          customersFactory.updateCustomer($scope.customer).then(function(res){
-          });
-        } else {
-          customersFactory.saveCustomerDetails($scope.customer).then(function(res){
-            $scope.customerId = res.data._id;
+        customersFactory.saveCustomerDetails($scope.customer).then(function(res){
+            $scope.customer = res.data;
+            $scope.customerId = $scope.customer._id;
             $scope.displayConnections = true;
-          });
-        }
+            flashMessageService.setMessage("Customer Saved Successfully");
+         });
       };
 
       $scope.toggleModal = function(heading, connection){
@@ -258,12 +259,7 @@ angular.module('myApp.controllers', [])
          }
          else{
             //clean this later
-            customersFactory.getCustomer($scope.customerId).then(function(res){
-              $scope.customer = res.data;
-              $scope.customer.dateofbirth = new Date($scope.customer.dateofbirth);
-            }, function(err){
-              console.log("Error in finding customer data for Id : "+$scope.customerId + ".Error: "+err.message);
-            });
+            getCustomer();
          }
       }
 
@@ -272,16 +268,10 @@ angular.module('myApp.controllers', [])
       }
       $scope.saveConnectionDetails = function(){
         $scope.connection.customerid = $scope.customer.uniqcustid;
-        if(typeof $scope.connection._id != 'undefined'){
-          connectionFactory.updateConnection($scope.connection).then(function(res){
+        connectionFactory.saveConnectionDetails($scope.connection).then(function(res){
             $scope.toggleModal('');    
+            flashMessageService.setMessage("Connection Saved Successfully");
           });
-        } else {
-          connectionFactory.saveConnectionDetails($scope.connection).then(function(res){
-            $scope.toggleModal('');    
-
-          });
-        }
       };
       
      
@@ -316,13 +306,15 @@ angular.module('myApp.controllers', [])
       $scope.dobStatus = { opened: false };
       $scope.startStatus = { opened: false };
     $scope.saveAgent = function(){
+
+      //refactor
       if($scope.agentId == 0){
         agentsFactory.addAgent($scope.agent).then(function(res){
-
+          flashMessageService.setMessage("Agent Saved Successfully");
         })
       } else {
         agentsFactory.updateAgent($scope.agent).then(function(res){
-
+          flashMessageService.setMessage("Agent Saved Successfully");
         })
       }
     }

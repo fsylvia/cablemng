@@ -35,6 +35,7 @@ db.once('open', function() {
 	      		var subscriptionAmt = connection.subscriptionamt;
 	      		var duedate = connection.conpaymentdate;
 	            //console.log("Customer "+ connection.customerid +" is to pay "+subscriptionAmt+" by "+ duedate+ " of this month for connection"+ connection._id);
+	            
 	            if(new Date().getDate() >= duedate){
 	            	var payments = connection.payments;
 	                if(payments.length == 0){

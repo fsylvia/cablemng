@@ -10,7 +10,11 @@ angular.module('myApp.services', []).
   .factory('customersFactory', ['$http', function($http){
       return {
         saveCustomerDetails : function (customer){
-          return $http.post('api/customer/add', customer);
+          console.log(customer._id);
+          if(typeof customer._id == 'undefined')
+            return $http.post('api/customer/add', customer);
+          else
+            return $http.post('api/customer/edit', customer);
         },
 
         getActiveCustomers : function(){
@@ -19,30 +23,21 @@ angular.module('myApp.services', []).
 
         getCustomer : function(id){
           return $http.get('api/customer/'+id);
-        },
-
-        updateCustomer : function (customer){
-          return $http.post('api/customer/edit', customer);
         }
-
-
       };
   }])
   .factory('connectionFactory', ['$http', function($http){
     return {
       saveConnectionDetails : function(connection){
-        return $http.post('api/connection/add', connection);
+        if(typeof connection._id == 'undefined')
+          return $http.post('api/connection/add', connection);
+        else
+          return $http.post('api/connection/update', connection);
       },
 
       getAllConnectionsForCustomer : function(customerId){
         return $http.get('api/connection/'+customerId);
-      },
-
-      updateConnection : function(connection){
-        return $http.post('api/connection/update', connection);
       }
-      
-
     };
   }])
   .factory('paymentsFactory', ['$http', function($http){

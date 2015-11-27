@@ -234,16 +234,11 @@ router.get('/customer/:id', function(req, res){
 	Customer.findOne({_id: customerId}, function(err, customer){
 		handleError(err,customer, res);
 	})
-	/*Customer.findOne({_id: customerId}).run(function (err, customer) {
-  		customer.connections.populate('payments', function (err) {
-  			if(err) 
-    		console.log(customer.connections.payments)
-  		})
-	})*/
 });
 
 router.get('/customer', function(req, res){
-	Customer.find({active: true}, function(err, customers){
+	//{active: true},
+	Customer.find( function(err, customers){
 		handleError(err, customers, res);
 	})
 });
@@ -269,9 +264,8 @@ router.post('/connection/add', function(req, res){
 		},
 		createddate: new Date(Date.now())
 	};
-	console.log(connection);
+	
 	Customer.findOne({uniqcustid: req.body.customerid}, function(err, customer){
-		console.log(customer);
 		customer.connections.push(connection);
 		customer.active = true;
 		customer.save(function(err, customer){
