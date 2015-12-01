@@ -11,13 +11,11 @@ var Agent = new Schema({
 		street1 : String,
 		street2: String,
 		area: String,
-		city: {type: 'string', default: 'Trichy' },
-		pincode: Number
+		city: {type: 'string', default: 'Trichy' }
 	},
 	contacts : {
 		landlineno : String,
-		mobileno : String,
-		email: String
+		mobileno : String
 	},
 	areallocated : String,
 	startdate: Date,

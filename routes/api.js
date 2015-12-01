@@ -354,64 +354,69 @@ router.get('/agent/:agentid', function(req,res){
 });
 
 router.post('/agent/add', function(req, res){
-	var agent = new Agent ({
-		uniqagentid : getUniqueId('AT', req.body.customername, req.body.mobileno),
-		agentname: req.body.agentname,
-		fathersname: req.body.fathersname,
-		dateofbirth: req.body.dateofbirth,
-		idprooftype: req.body.idprooftype,
-		idproofno: req.body.idproofno, 
-		address : {
-			street1 : req.body.address.street1,
-			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
-		},
-		contacts : {
-			landlineno : req.body.contacts.landlineno,
-			mobileno : req.body.contacts.mobileno,
-			email: req.body.contacts.email
-		},
-		areallocated : req.body.areallocated,
-		startdate: req.body.startdate,
-		salary: req.body.salary,
-		active: true,
-		createddate: new Date(Date.now())
-	});
-	console.log(agent);
-	agent.save(function(err){
-		handleError(err, 'Agent saved successfully', res);
-	});
+	try{
+		var agent = new Agent ({
+			uniqagentid : getUniqueId('AT', req.body.agentname, req.body.contacts.mobileno),
+			agentname: req.body.agentname,
+			fathersname: req.body.fathersname,
+			dateofbirth: req.body.dateofbirth,
+			idprooftype: req.body.idprooftype,
+			idproofno: req.body.idproofno, 
+			address : {
+				street1 : req.body.address.street1,
+				street2: req.body.address.street2,
+				area: req.body.address.area
+			},
+			contacts : {
+				landlineno : req.body.contacts.landlineno,
+				mobileno : req.body.contacts.mobileno
+			},
+			areallocated : req.body.areallocated,
+			startdate: req.body.startdate,
+			salary: req.body.salary,
+			active: req.body.active,
+			createddate: new Date(Date.now())
+		});
+		
+		agent.save(function(err){
+			handleError(err, 'Agent saved successfully', res);
+		});
+	}catch(err){
+		console.log('Error in adding agent', err, err.stack.split('\n'));
+	}
+	
 });
 
 router.post('/agent/edit', function(req, res){
-	var updateSet = {
-		agentname: req.body.agentname,
-		fathersname: req.body.fathersname,
-		dateofbirth: req.body.dateofbirth,
-		idprooftype: req.body.idprooftype,
-		idproofno: req.body.idproofno, 
-		address : {
-			street1 : req.body.address.street1,
-			street2: req.body.address.street2,
-			area: req.body.address.area,
-			pincode: req.body.address.pincode
-		},
-		contacts : {
-			landlineno : req.body.contacts.landlineno,
-			mobileno : req.body.contacts.mobileno,
-			email: req.body.contacts.email
-		},
-		areallocated : req.body.areallocated,
-		startdate: req.body.startdate,
-		salary: req.body.salary,
-		active: req.body.active,
-		updateddate: new Date(Date.now())
+	try{
+		var updateSet = {
+			agentname: req.body.agentname,
+			fathersname: req.body.fathersname,
+			dateofbirth: req.body.dateofbirth,
+			idprooftype: req.body.idprooftype,
+			idproofno: req.body.idproofno, 
+			address : {
+				street1 : req.body.address.street1,
+				street2: req.body.address.street2,
+				area: req.body.address.area
+			},
+			contacts : {
+				landlineno : req.body.contacts.landlineno,
+				mobileno : req.body.contacts.mobileno
+			},
+			areallocated : req.body.areallocated,
+			startdate: req.body.startdate,
+			salary: req.body.salary,
+			active: req.body.active,
+			updateddate: new Date(Date.now())
+		}
+		
+		Agent.findByIdAndUpdate(req.body._id, { $set: updateSet}).exec(function(err){
+			handleError(err, "Agent updated successfully", res);
+		});
+	} catch(err){
+		console.log('Error in updating agent', err, err.stack.split('\n'));
 	}
-	
-	Agent.findByIdAndUpdate(req.body._id, { $set: updateSet}).exec(function(err){
-		handleError(err, "Agent updated successfully", res);
-	});
 });
 
 
