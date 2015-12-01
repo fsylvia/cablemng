@@ -42,7 +42,7 @@ var Customer = new Schema({
 	customername : String,
 	fathersname: String,
 	idprooftype: String,
-	idproofno: {type: 'string', unique: true },
+	idproofno: String,
 	dateofbirth: Date,
 	uniqcustid : { type: 'string', unique: true },
 	custstartdate : Date, 

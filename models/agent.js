@@ -6,7 +6,7 @@ var Agent = new Schema({
 	fathersname: String,
 	dateofbirth: Date,
 	idprooftype: String,
-	idproofno: { type: 'string', unique: true },
+	idproofno: String,
 	address : {
 		street1 : String,
 		street2: String,

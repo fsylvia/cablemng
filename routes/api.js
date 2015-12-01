@@ -17,18 +17,16 @@ function handleError(err, result, res){
 		return res.send(result);
 	}
 	else {
+		console.log('Error ', err, err.stack.split('\n'));
 		return res.send(500, err);
 	}
 }
 
-function getUniqueId(flag, idproofno, dateofbirth, fathersname, name){
-	var derivedCustId = "";
-	if(idproofno) {
-		var rndNo = Math.random();
-		rndNo = rndNo.toPrecision(2) * 10000;
-		derivedCustId = flag+rndNo + idproofno;
-	}
-	return derivedCustId;
+function getUniqueId(flag, name, mobileno){
+	var derivedId = flag + name.substr(0,3).toUpperCase() + mobileno.substr(5,5);
+	var today = new Date();
+	derivedId = derivedId + (today.getFullYear()+''+today.getMonth()+''+today.getDate());
+	return derivedId;
 }
 
 function onBulkInsert(err, myDocuments) {
@@ -175,7 +173,7 @@ router.get('/lookup/delete/:id', function(req, res){
 });
 
 router.post('/customer/add', function(req, res){
-	var derivedId = getUniqueId('CR',req.body.idproofno, req.body.dateofbirth, req.body.fathername, req.body.customername);
+	var derivedId = getUniqueId('CR',req.body.customername, req.body.contacts.mobileno);
 	
 	var customer = new Customer({
 		customername : req.body.customername,
@@ -357,7 +355,7 @@ router.get('/agent/:agentid', function(req,res){
 
 router.post('/agent/add', function(req, res){
 	var agent = new Agent ({
-		uniqagentid : getUniqueId('AT', req.body.idproofno),
+		uniqagentid : getUniqueId('AT', req.body.customername, req.body.mobileno),
 		agentname: req.body.agentname,
 		fathersname: req.body.fathersname,
 		dateofbirth: req.body.dateofbirth,
@@ -380,8 +378,9 @@ router.post('/agent/add', function(req, res){
 		active: true,
 		createddate: new Date(Date.now())
 	});
+	console.log(agent);
 	agent.save(function(err){
-		handleError(err, agent, res);
+		handleError(err, 'Agent saved successfully', res);
 	});
 });
 
