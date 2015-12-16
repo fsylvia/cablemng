@@ -139,7 +139,6 @@ angular.module('myApp.controllers', [])
       {field: 'paymentstatus', displayName : 'Paid Status', width: "90", cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
         
         if(grid.getCellValue(row, col) == 'Pending'){
-          console.log('cell class set');
           return 'alert-danger';
         }
       }},
@@ -157,10 +156,17 @@ angular.module('myApp.controllers', [])
         $scope.payment.connectionId = connection._id;
         $scope.payment.customerId = connection.customerid;
         
-        paymentsFactory.addPayment($scope.payment).then(function(res){
-          getCustomers();
-          flashMessageService.setMessage("Payment Saved Successfully");
-        });
+        if($scope.payment.paidamt == null || isNaN($scope.payment.paidamt) || 
+          $scope.payment.paidyear == null || isNaN($scope.payment.paidyear) || 
+          $scope.payment.paidto == undefined || $scope.payment.paidmonth == undefined){
+          flashMessageService.setMessage("Payment not saved. Please enter valid values for payment");
+        } else {
+          paymentsFactory.addPayment($scope.payment).then(function(res){
+              getCustomers();
+              flashMessageService.setMessage("Payment Saved Successfully");
+          });
+        }
+      
         
       }
 

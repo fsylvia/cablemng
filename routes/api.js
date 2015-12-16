@@ -459,9 +459,7 @@ router.post('/connection/payment/add', function(req, res){
 				connection.payments.push(payment);
 				
 				customer.save(function(err, customer){
-					if(err) console.log('Error in updating payment', err, err.stack.split('\n'));
-					else
-						res.send(customer);
+					handleError(err, customer, res);
 
 				});
 			})

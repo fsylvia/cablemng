@@ -11,6 +11,9 @@ var Payment = new Schema({
 	paymenttype : String,
 	connectionId : String
 });
+//combination and month and year to be unique
+//Payment.index({ paidyear: 1, paidmonth: -1 }, { unique: true })
+//db.payments.createIndex( { 'paidyear': 1, 'paidmonth': 1 }, { unique: true } )
 var CConnection = new Schema({
 	customerid : String,
 	advanceamt : Number,
