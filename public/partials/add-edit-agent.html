@@ -2,6 +2,7 @@
 <form class="form-horizontal" name="agentForm" novalidate>
   <fieldset>
     <legend>{{header}}</legend>
+    <p>{{agentForm.$invalid}} -- {{ agentForm.agentname.$touched && agentForm.agentname.$invalid }}</p>
       <div id="help" class="row" ng-show="agentForm.$invalid">
         <div class="help-block" ng-messages="agentForm.agentname.$error" ng-if="agentForm.agentname.$touched">
               <p class="text-danger" ng-message="required">Agent Name is required.</p>
@@ -36,17 +37,17 @@
       <div class="form-group">
         <div ng-class="{ 'has-error': agentForm.agentname.$touched && agentForm.agentname.$invalid }">
           <label for="agentname" class="col-md-1 control-label"> Name</label>
-          <div class="col-md-2"><input class=" form-control " id="agentname" placeholder="Kannagi" type="text" ng-model="agent.agentname" required></div>
+          <div class="col-md-2"><input class=" form-control " name="agentname" placeholder="Kannagi" type="text" ng-model="agent.agentname" required></div>
         </div>
         <div>
           <label for="fathersname" class="col-md-2  control-label"> Father's Name</label>
-          <div class="col-md-2"><input class=" form-control " id="fathersname" placeholder="Murugan" type="text" ng-model="agent.fathersname"></div>
+          <div class="col-md-2"><input class=" form-control " name="fathersname" placeholder="Murugan" type="text" ng-model="agent.fathersname"></div>
         </div>
         <div>
           <label for="dateofbirth" class="col-md-2 control-label"> Date Of Birth</label>
           <div class="col-md-2">
             <p class="input-group">
-              <input id="dateofbirth" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.dateofbirth" is-open="dobStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" />
+              <input name="dateofbirth" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.dateofbirth" is-open="dobStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" />
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openCal($event, 'dobstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -57,37 +58,37 @@
 
       <div class="form-group">
         <label class="col-md-1 control-label" for="active" >Active </label>
-        <div class="col-md-1"> <input id="active" type="checkbox" ng-model="agent.active"/></div>
+        <div class="col-md-1"> <input name="active" type="checkbox" ng-model="agent.active"/></div>
         <div class="col-md-10" ng-show="!agent.active">
           <label for="reasonfortermination" class="col-md-3 control-label" >Reason for Termination: </label>
-              <select class="col-md-2"  id="terminationreason" ng-model="agent.reasonfortermination">
+              <select class="col-md-2"  name="terminationreason" ng-model="agent.reasonfortermination">
             <option ng-repeat="terminationReason in terminationReasons"value="{{terminationReason.lookupvalue}}">{{terminationReason.lookupvalue}}</option>
           </select>
         </div>
       </div>
       <div class="form-group ">
         <label for="idprooftype" class="col-md-1 control-label"> ID Proof</label>
-        <div class="col-md-2"><select class=" form-control " id="idprooftype" ng-model="agent.idprooftype">
+        <div class="col-md-2"><select class=" form-control " name="idprooftype" ng-model="agent.idprooftype">
           <option ng-repeat="prooftype in idprooftypes" value="{{prooftype.lookupvalue}}">{{prooftype.lookupvalue}}</option>
         </select></div>
 
         <label for="idproofno" class="col-md-2  control-label"> ID Proof No</label>
-        <div class="col-md-2"><input class=" form-control " id="idproofno" placeholder="AFGPC1122N" type="text" ng-model="agent.idproofno"></div>
+        <div class="col-md-2"><input class=" form-control " name="idproofno" placeholder="AFGPC1122N" type="text" ng-model="agent.idproofno"></div>
         
       </div>
       <div class="form-group ">
         <div ng-class="{ 'has-error': agentForm.street1.$touched && agentForm.street1.$invalid }">
           <label for="street1" class="col-md-1 control-label">Door No</label>
-          <div class="col-md-2"><input class=" form-control " id="street1" placeholder="No4" type="text" ng-model="agent.address.street1" required></div>
+          <div class="col-md-2"><input class=" form-control " name="street1" placeholder="No4" type="text" ng-model="agent.address.street1" required></div>
         </div>
           
         <div ng-class="{ 'has-error': agentForm.street2.$touched && agentForm.street2.$invalid }">
           <label for="street2" class="col-md-1  control-label">Street</label>
-          <div class="col-md-2"><input class=" form-control " id="street2" placeholder="Wireless Station Road" type="text" ng-model="agent.address.street2" required></div>
+          <div class="col-md-2"><input class=" form-control " name="street2" placeholder="Wireless Station Road" type="text" ng-model="agent.address.street2" required></div>
         </div>
         <div ng-class="{ 'has-error': agentForm.area.$touched && agentForm.area.$invalid }">
           <label for="area" class="col-md-1 control-label">Area</label>
-          <div class="col-md-2"><select class="form-control" id="area" ng-model="agent.address.area" required>
+          <div class="col-md-2"><select class="form-control" name="area" ng-model="agent.address.area" required>
             <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
           </select>
           </div>
@@ -97,20 +98,20 @@
       <div class="form-group ">
         <div ng-class="{ 'has-error': agentForm.landlineno.$touched && agentForm.landlineno.$invalid }">
           <label for="landlineno" class="col-md-1 control-label">LandLine No</label>
-          <div class="col-md-2"><input class=" form-control " id="landlineno" placeholder="0431-" type="text" ng-model="agent.contacts.landlineno">
+          <div class="col-md-2"><input class=" form-control " name="landlineno" placeholder="0431-" type="text" ng-model="agent.contacts.landlineno">
           </div>
         </div>  
           
         <div ng-class="{ 'has-error': agentForm.mobileno.$touched && agentForm.mobileno.$invalid }">  
           <label for="mobileno" class="col-md-1  control-label">Mobile No</label>
-          <div class="col-md-2"><input class=" form-control " id="mobileno" placeholder="9882323248" type="text" ng-model="agent.contacts.mobileno" required></div>
+          <div class="col-md-2"><input class=" form-control " name="mobileno" placeholder="9882323248" type="text" ng-model="agent.contacts.mobileno" required></div>
         </div>  
 
       </div>
       <div class="form-group">
         <div ng-class="{ 'has-error': agentForm.areallocated.$touched && agentForm.areallocated.$invalid }">  
           <label for="areallocated" class="col-md-1 control-label">Area Allocated</label>
-          <div class="col-md-2"><select class="form-control" id="areallocated" ng-model="agent.areallocated" required>
+          <div class="col-md-2"><select class="form-control" name="areallocated" ng-model="agent.areallocated" required>
             <option ng-repeat="area in areas" value="{{area.lookupvalue}}">{{area.lookupvalue}}</option>
           </select>
           </div>
@@ -120,7 +121,7 @@
           <label for="startdate" class="col-md-1 control-label">Start Date</label>
           <div class="col-md-2">
             <p class="input-group">
-              <input id="startdate" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.startdate" is-open="startStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" required/>
+              <input name="startdate" type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="agent.startdate" is-open="startStatus.opened" datepicker-options="dateOptions" date-ng-required="true" close-text="Close" required/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openCal($event, 'startstatus')"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -130,7 +131,7 @@
         
         <div ng-class="{ 'has-error': agentForm.salary.$touched && agentForm.salary.$invalid }">    
           <label for="salary" class="col-md-1  control-label">Salary</label>
-          <div class="col-md-2"><input class=" form-control " id="salary" placeholder="3000" type="text" ng-model="agent.salary" required></div>
+          <div class="col-md-2"><input class=" form-control " name="salary" placeholder="3000" type="text" ng-model="agent.salary" required></div>
         </div>  
         
         <div class="col-md-2 pull-right"><button class="btn btn-success" data-ng-disabled="agentForm.$invalid" ng-click="saveAgent()">Save Agent Details</button></div>
