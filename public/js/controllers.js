@@ -112,6 +112,12 @@ angular.module('myApp.controllers', [])
             row.getAddress = function(){
               return this.address.street1 + ', ' + this.address.street2 + ', ' + this.address.area;
             }
+            row.getContacts = function() {
+              var contacts = this.contacts.mobileno;
+              if(this.contacts.landlineno != null)
+                contacts = this.contacts.landlineno + ', ' + contacts;
+              return contacts;
+            }
           });
         }, function(err){
           console.log('Error in getting customer list'+err.message);
@@ -123,17 +129,21 @@ angular.module('myApp.controllers', [])
         field: 'active', 
         displayName: 'Active',
         width:"70" ,
-        cellTemplate: '<div class="ui-grid-cell-contents"><img ng-if="COL_FIELD" ng-src="img/truetick.png"/><img ng-if="!COL_FIELD" ng-src="img/falsecross.png"/></div>'
+        cellTemplate: '<div class="ui-grid-cell-contents"><img ng-if="COL_FIELD" ng-src="img/truetick.png"/><img ng-if="!COL_FIELD" ng-src="img/falsecross.png"/></div>',
+        filter: {term: true}
       },
       {field: 'uniqcustid', displayName : 'Customer ID', width: 150},
       {field: 'customername', displayName : 'Customer Name', width: 150 }, 
       {field: 'getAddress()',  displayName: 'Address', width: "300", filter: {condition: uiGridConstants.filter.CONTAINS}},
-      {field: 'contacts',  displayName: 'Contact No', 
-        cellTemplate: '<div class="ui-grid-cell-contents wrap">{{COL_FIELD.landlineno}},  {{COL_FIELD.mobileno}}</div>',
-        width: "200"
-      },
-      {field: 'paymentstatus', displayName : 'Paid Status', width: "90"},
-      {field: 'paymentdue', displayName : 'Amount Due', width: "100"},
+      {field: 'getContacts()',  displayName: 'Contact No', filter: {condition: uiGridConstants.filter.CONTAINS}, width: "200"},
+      {field: 'paymentstatus', displayName : 'Paid Status', width: "90", cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+        
+        if(grid.getCellValue(row, col) == 'Pending'){
+          console.log('cell class set');
+          return 'alert-danger';
+        }
+      }},
+      {field: 'paymentdue', displayName : 'Amount Due', width: "100", sort: {direction: uiGridConstants.DESC, priority: 0}},
       {
         field: '_id',
         enableFiltering: false,
@@ -277,9 +287,43 @@ angular.module('myApp.controllers', [])
      
       
   }])
-  .controller('AgentCtrl', ['$scope', 'agentsFactory', function($scope, agentsFactory) {
+  .controller('AgentCtrl', ['$scope', 'agentsFactory', 'uiGridConstants', function($scope, agentsFactory, uiGridConstants) {
+     $scope.columns = [
+      {
+        field: 'active', 
+        displayName: 'Active',
+        width:"70" ,
+        cellTemplate: '<div class="ui-grid-cell-contents"><img ng-if="COL_FIELD" ng-src="img/truetick.png"/><img ng-if="!COL_FIELD" ng-src="img/falsecross.png"/></div>'
+      },
+      {field: 'uniqagentid', displayName : 'Agent ID'},
+      {field: 'agentname', displayName : 'Agent Name'}, 
+      {field: 'getAddress()',  displayName: 'Address', filter: {condition: uiGridConstants.filter.CONTAINS}},
+      {field: 'getContacts()',  displayName: 'Contact No', filter: {condition: uiGridConstants.filter.CONTAINS}},
+      {
+        field: '_id',
+        enableFiltering: false,
+        name: ' ', 
+        cellTemplate: '<div class="ui-grid-cell-contents"><a href="#/agent/add-edit/{{ COL_FIELD }}" class="btn btn-success btn-xs" >Edit</a></div>',
+        width: "50"
+      }];
+      
+      $scope.gridOptions = {
+        enableFiltering: true,
+        columnDefs: $scope.columns
+      }  
       agentsFactory.getAgents().then(function(res){
-        $scope.agents = res.data;
+         $scope.gridOptions.data = res.data;
+          angular.forEach($scope.gridOptions.data,function(row){
+            row.getAddress = function(){
+              return this.address.street1 + ', ' + this.address.street2 + ', ' + this.address.area;
+            }
+            row.getContacts = function() {
+              var contacts = this.contacts.mobileno;
+              if(this.contacts.landlineno != null)
+                contacts = this.contacts.landlineno + ', ' + contacts;
+              return contacts;
+            }
+          });
       })
   }])
   .controller('AddEditAgentCtrl', ['$scope', '$routeParams', 'lookupFactory', 'agentsFactory', 'flashMessageService', 

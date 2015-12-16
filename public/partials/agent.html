@@ -2,26 +2,5 @@
 <div class="row">
 	<a href="#/agent/add-edit/0" class="btn btn-success pull-right">Add Agent</a>
 </div>
-<div class="row">
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Agent ID</th>
-			<th>Name</th>
-			<th>Address</th>
-			<th>Phone Number</th>
-			<th>Edit</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="agent in agents">
-			<td>{{agent.uniqagentid}}</td>
-			<td>{{agent.agentname}}</td>
-			<td>{{agent.address.street1}}, {{agent.address.street2}}, <b>{{agent.address.area}}</b>, {{agent.address.city}}, {{agent.address.pincode}}</td>
-			<td>{{agent.contacts.landlineno}}, {{agent.contacts.mobileno}}</td>
-			<td><a href="#/agent/add-edit/{{agent._id}}" class="btn btn-success btn-xs" >Edit</a></td>
-		</tr>
-	</tbody>
-</table>
-</div>
+<div class="row"><div ui-grid="gridOptions"></div></div>
 </div>
